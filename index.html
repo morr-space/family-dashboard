@@ -300,6 +300,9 @@ body[data-v=pm] .home{display:flex}
 @media(prefers-reduced-motion:reduce){.pop div{animation:none}.burst{display:none}.fill,.chick{transition:none}}
 dialog{border:0;border-radius:24px;padding:0;width:min(620px,94vw);max-height:90vh;background:var(--card);color:var(--ink)}
 dialog::backdrop{background:#0006}
+.dh{position:sticky;top:0;z-index:2;background:var(--card);display:flex;align-items:center;justify-content:space-between;gap:10px;margin:-20px -22px 0;padding:16px 22px 10px;border-bottom:1px solid var(--line)}
+.dh h2:focus{outline:none}
+.xb{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--bg);font-size:28px;line-height:1;color:var(--ink);display:grid;place-items:center;padding:0 0 3px}
 .dlg{padding:20px 22px;display:grid;gap:14px}
 .dlg h2{margin:0;font-size:28px}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -367,7 +370,7 @@ input[type=time],input[type=text],select{font:inherit;font-size:16px;min-height:
 <dialog id="sayd"><div class="dlg" id="sayc"></div></dialog>
 <div class="pop" id="pop" role="status"><div id="popc"></div></div>
 <dialog id="dlg"><form class="dlg" id="form">
-  <h2>설정</h2>
+  <div class="dh"><h2 tabindex="-1" autofocus id="dlgh">설정</h2><button type="button" class="xb" id="dlgx" aria-label="설정 닫기">×</button></div>
   <div class="row"><label for="st">준비 시작</label><input type="time" id="st"><label for="dt">출발 시각</label><input type="time" id="dt"></div>
   <div class="note" style="text-align:left">주말(토·일)에는 '쉬는 날' 화면이 나와요.</div>
   <div class="row"><label for="vc">목소리</label><select id="vc"></select><button type="button" class="btn ghost" id="vtest">들어보기</button></div>
@@ -636,6 +639,7 @@ function editor(){
 }
 $('gear').onclick=()=>{draft=JSON.parse(JSON.stringify(cfg));editor();$('dlg').showModal();const h=$('dlg').querySelector('h2');h.tabIndex=-1;h.style.outline='none';h.focus({preventScroll:true})};
 $('cancel').onclick=()=>$('dlg').close();
+$('dlgx').onclick=()=>$('dlg').close();
 $('dlg').addEventListener('close',()=>applyLook(cfg));
 $('kedit').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0],i=e.target.dataset.photo;if(!f||i===undefined)return;
   const url=URL.createObjectURL(f),img=new Image();
@@ -677,7 +681,7 @@ function sayClean(){const n=new Date(),b=new Date(n.getFullYear(),n.getMonth(),n
 function sayOpen(ki){sayKi=ki;const k=cfg.kids[ki],on=t=>SM[ki]&&SM[ki].t===t;
   const btn=t=>`<button type="button" data-st="${esc(t)}" aria-pressed="${!!on(t)}">${sayIco(t)}${esc(t)}</button>`;
   $('sayc').style.setProperty('--k',KC[ki%2]);
-  $('sayc').innerHTML=`<h2 tabindex="-1" id="sayh">${esc(k.name)} · 하고 싶은 말</h2><div class="sg">${SAY.map(([t])=>btn(t)).join('')}${CUS.map((t,i)=>`<div class="cw">${btn(t)}<button type="button" class="del" data-sdel="${i}" aria-label="${esc(t)} 지우기">×</button></div>`).join('')}</div>
+  $('sayc').innerHTML=`<div class="dh"><h2 tabindex="-1" autofocus id="sayh">${esc(k.name)} · 하고 싶은 말</h2><button type="button" class="xb" data-sx="1" aria-label="닫기">×</button></div><div class="sg">${SAY.map(([t])=>btn(t)).join('')}${CUS.map((t,i)=>`<div class="cw">${btn(t)}<button type="button" class="del" data-sdel="${i}" aria-label="${esc(t)} 지우기">×</button></div>`).join('')}</div>
   <form class="row" id="sform"><input type="text" id="snew" maxlength="12" placeholder="새로운 말 (예: 물 주세요)" autocomplete="off" style="flex:1"><button class="btn">추가</button></form>
   <div class="row"><button type="button" class="btn ghost" data-sclr="1">말풍선 비우기</button><span class="sp"></span><button type="button" class="btn ghost" data-sx="1">닫기</button></div>`;
   if(!$('sayd').open)$('sayd').showModal();
