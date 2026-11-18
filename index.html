@@ -71,7 +71,17 @@ html.night .walker,html.night .walker .fl,html.night .walker svg{animation-play-
 html.night .zz{display:block}html.night .walker.jump .zz{display:none}
 @keyframes zz{0%{transform:translate(0,4px);opacity:0}30%{opacity:1}100%{transform:translate(8px,-10px);opacity:0}}
 @media(prefers-reduced-motion:reduce){.stars i,.zz{animation:none}.cloud,.walker,.walker .fl,.walker svg,.hk .av2,.kh .av,.gc .big{animation:none}}
-.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:12px;background:repeating-linear-gradient(90deg,var(--grass) 0 14px,light-dark(#7ccc72,#5bb266) 14px 28px)}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:12px;background:repeating-linear-gradient(90deg,var(--grass) 0 14px,var(--grass2) 14px 28px)}
+:root{--grass2:light-dark(#7ccc72,#5bb266)}
+html[data-pal=pastel]{--sky:light-dark(#f9c9dc,#5a3a55);--sky2:light-dark(#fde9f1,#6e4a68);--bg:light-dark(#fff7fb,#221a22);--grass:light-dark(#b8e3c6,#4f8a60);--grass2:light-dark(#a3d6b3,#457a55);--line:light-dark(#f0dbe5,#4a3a48)}
+html[data-pal=beach]{--sky:light-dark(#6cc7e0,#1d4a5c);--sky2:light-dark(#c6eef7,#2a6378);--bg:light-dark(#fbf6ea,#16242a);--grass:light-dark(#f2dcae,#8a7448);--grass2:light-dark(#e8cd95,#7a653c);--line:light-dark(#eadfc6,#2f4249)}
+html[data-pal=forest]{--sky:light-dark(#f6c99a,#5a3e2a);--sky2:light-dark(#fbe5c8,#6e4e36);--bg:light-dark(#f6efe2,#1e1a14);--grass:light-dark(#6a9f58,#4a7a3e);--grass2:light-dark(#5a8e4a,#3f6b34);--line:light-dark(#e6dcc8,#3a3328)}
+html[data-pal=space]{--sky:#23305e;--sky2:#3c4a86;--bg:light-dark(#eef1fb,#141a30);--grass:#3e8a6e;--grass2:#357a60;--line:light-dark(#d8ddef,#2c3558)}
+html[data-pal=space] .date,html[data-pal=space] .clock small{color:#fff}
+html[data-pal=space] .tab{color:#fff;background:#ffffff1f;border-color:#ffffff40}
+html[data-pal=space] .tab[aria-pressed=true]{color:var(--ink);background:var(--card)}
+html[data-pal=space] .ib{background:#ffffff26;color:#fff}
+html[data-pal=space] .cloud{display:none}html[data-pal=space] .stars,html[data-pal=space] .moon{display:block}
 .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .tab{min-height:44px;padding:6px 18px;border-radius:999px;border:2px solid #fff8;background:#ffffff55;font-family:Jua;font-size:19px}
 .tab[aria-pressed=true]{background:var(--card);border-color:var(--card);box-shadow:0 3px 0 #0002}
@@ -445,7 +455,7 @@ async function pull(){if(!TOK)return;
     RV=j.v;ready=true;Object.assign(pend,up);if(Object.keys(up).length)flush();
     if(ch)reloadState();syncStat('ok')}
   catch(e){syncStat('off')}}
-function reloadState(){cfg=load('md-cfg3',cfg);prog=load('md-prog2',prog);G=load('md-gauge',G);SM=load('md-say',SM);EV=load('md-events',EV);
+function reloadState(){cfg=load('md-cfg3',cfg);applyLook(cfg);prog=load('md-prog2',prog);G=load('md-gauge',G);SM=load('md-say',SM);EV=load('md-events',EV);
   try{CUS=load('md-say-custom',CUS)}catch(e){}
   calKey='';cal(new Date());if(!$('dlg').open&&!$('sayd').open)nav()}
 const save=(k,v)=>{const raw=JSON.stringify(v);try{localStorage.setItem(k,raw)}catch(e){}syncPut(k,raw)};
@@ -453,6 +463,10 @@ let cfg=load('md-cfg3',null);
 if(!cfg){const o=load('md-cfg2',null);cfg=JSON.parse(JSON.stringify(DEF));
   if(o){cfg.start=o.start;cfg.dep=o.dep;cfg.dad=o.dad;cfg.mom=o.mom;(o.kids||[]).slice(0,2).forEach((k,i)=>{cfg.kids[i].name=k.name;if(k.tasks)cfg.kids[i].am=k.tasks})}}
 let view='home',lastAuto=autoView();
+const PALS=[['sky','하늘과 잔디'],['pastel','파스텔 솜사탕'],['beach','바닷가 여름'],['forest','숲속 캠핑'],['space','우주 탐험']];
+const MODES=[['light','항상 밝게'],['auto','기기 설정 따라'],['dark','항상 어둡게']];
+function applyLook(c){const r=document.documentElement,m=c.mode||'light';if(m==='auto')delete r.dataset.theme;else r.dataset.theme=m;r.dataset.pal=c.pal||'sky'}
+applyLook(cfg);
 if((cfg.chv||0)<2){['tsb','asb'].forEach((c,i)=>{if(cfg.kids[i])cfg.kids[i].ch=c});cfg.chv=2;save('md-cfg3',cfg)}
 G=load('md-gauge',{pts:[0,0],aw:{}});EV=load('md-events',[]);SM=load('md-say',{});
 const gsave=()=>save('md-gauge',G);
@@ -616,10 +630,13 @@ $('vc').onchange=()=>{draft.voice=$('vc').value};
 $('vtest').onclick=()=>{const keep=cfg.voice;cfg.voice=$('vc').value;speak('사랑해요. 오늘도 수고했어요');cfg.voice=keep};
 function editor(){
   $('st').value=draft.start;$('dt').value=draft.dep;voices();
-  $('kedit').innerHTML=`<div class="row"><label for="pd">아빠</label><input type="text" id="pd" data-p="dad" value="${esc(draft.dad)}" maxlength="10"><label for="pm2">엄마</label><input type="text" id="pm2" data-p="mom" value="${esc(draft.mom)}" maxlength="10"></div>`+draft.kids.map((k,i)=>`<div class="kid"><div class="row"><label for="kn${i}">자녀${i+1}</label><input type="text" id="kn${i}" data-n="${i}" value="${esc(k.name)}" maxlength="10"></div><b>얼굴 사진</b><div class="phrow">${PH(i)?`<img class="ph" src="${PH(i)}" alt="" style="--k:${KC[i%2]}">`:''}<label class="btn ghost">사진 고르기<input type="file" accept="image/*" data-photo="${i}" hidden></label>${PH(i)?`<button type="button" class="btn ghost" data-phdel="${i}">사진 빼기</button>`:''}</div><div class="note" style="text-align:left">얼굴이 가운데 오게 자른 사진이 좋아요. 사진은 이 아이패드에만 저장되고, 넣으면 캐릭터 대신 사진이 나와요.</div><b>캐릭터</b><div class="chips">${Object.keys(CH).map(c=>`<button type="button" class="chip" data-kid="${i}" data-ch="${c}" aria-pressed="${chOf(k)===c}">${CH[c][0]}</button>`).join('')}</div><div class="note" style="text-align:left">누르는 순서대로 할 일 순서가 정해져요.</div>${['am','pm'].map(r=>`<b>${RT[r]}</b><div class="chips">${ORDER.map(t=>{const j=k[r].indexOf(t);return `<button type="button" class="chip" data-kid="${i}" data-r="${r}" data-t="${t}" aria-pressed="${j>=0}">${j>=0?(j+1)+'. ':''}${ICONS[t][0]}</button>`}).join('')}</div>`).join('')}</div>`).join('');
+  $('kedit').innerHTML=`<b>화면</b><div class="chips">${MODES.map(([v,l])=>`<button type="button" class="chip" data-mode="${v}" aria-pressed="${(draft.mode||'light')===v}">${l}</button>`).join('')}</div>
+  <b>색감</b><div class="chips">${PALS.map(([v,l])=>`<button type="button" class="chip" data-pal="${v}" aria-pressed="${(draft.pal||'sky')===v}">${l}</button>`).join('')}</div>
+  <div class="row"><label for="pd">아빠</label><input type="text" id="pd" data-p="dad" value="${esc(draft.dad)}" maxlength="10"><label for="pm2">엄마</label><input type="text" id="pm2" data-p="mom" value="${esc(draft.mom)}" maxlength="10"></div>`+draft.kids.map((k,i)=>`<div class="kid"><div class="row"><label for="kn${i}">자녀${i+1}</label><input type="text" id="kn${i}" data-n="${i}" value="${esc(k.name)}" maxlength="10"></div><b>얼굴 사진</b><div class="phrow">${PH(i)?`<img class="ph" src="${PH(i)}" alt="" style="--k:${KC[i%2]}">`:''}<label class="btn ghost">사진 고르기<input type="file" accept="image/*" data-photo="${i}" hidden></label>${PH(i)?`<button type="button" class="btn ghost" data-phdel="${i}">사진 빼기</button>`:''}</div><div class="note" style="text-align:left">얼굴이 가운데 오게 자른 사진이 좋아요. 사진은 이 아이패드에만 저장되고, 넣으면 캐릭터 대신 사진이 나와요.</div><b>캐릭터</b><div class="chips">${Object.keys(CH).map(c=>`<button type="button" class="chip" data-kid="${i}" data-ch="${c}" aria-pressed="${chOf(k)===c}">${CH[c][0]}</button>`).join('')}</div><div class="note" style="text-align:left">누르는 순서대로 할 일 순서가 정해져요.</div>${['am','pm'].map(r=>`<b>${RT[r]}</b><div class="chips">${ORDER.map(t=>{const j=k[r].indexOf(t);return `<button type="button" class="chip" data-kid="${i}" data-r="${r}" data-t="${t}" aria-pressed="${j>=0}">${j>=0?(j+1)+'. ':''}${ICONS[t][0]}</button>`}).join('')}</div>`).join('')}</div>`).join('');
 }
 $('gear').onclick=()=>{draft=JSON.parse(JSON.stringify(cfg));editor();$('dlg').showModal();const h=$('dlg').querySelector('h2');h.tabIndex=-1;h.style.outline='none';h.focus({preventScroll:true})};
 $('cancel').onclick=()=>$('dlg').close();
+$('dlg').addEventListener('close',()=>applyLook(cfg));
 $('kedit').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0],i=e.target.dataset.photo;if(!f||i===undefined)return;
   const url=URL.createObjectURL(f),img=new Image();
   img.onload=()=>{const S=240,c=document.createElement('canvas');c.width=c.height=S;const m=Math.min(img.width,img.height);
@@ -630,6 +647,8 @@ $('kedit').addEventListener('change',e=>{const f=e.target.files&&e.target.files[
 $('kedit').addEventListener('input',e=>{const i=e.target.dataset.n,p=e.target.dataset.p;if(i!==undefined)draft.kids[i].name=e.target.value;if(p)draft[p]=e.target.value});
 $('kedit').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.phdel!==undefined){try{localStorage.setItem('md-photo-'+b.dataset.phdel,'')}catch(e){}syncPut('md-photo-'+b.dataset.phdel,'');editor();cards();return}
+  if(b.dataset.mode){draft.mode=b.dataset.mode;applyLook(draft);editor();return}
+  if(b.dataset.pal){draft.pal=b.dataset.pal;applyLook(draft);editor();return}
   if(b.dataset.ch){draft.kids[b.dataset.kid].ch=b.dataset.ch;editor();return}
   if(!b.dataset.r)return;
   const L=draft.kids[b.dataset.kid][b.dataset.r],t=b.dataset.t,j=L.indexOf(t);
