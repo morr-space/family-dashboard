@@ -82,6 +82,16 @@ main{padding:22px max(2.5vw,12px) 24px;display:grid;gap:18px}
 .hp .gauge i{height:9px;border:0;border-radius:2px;background:light-dark(#e8edf0,#33444f)}
 .hp .gauge i.on{background:var(--k)}
 .hp b{font-family:Jua;font-weight:400;font-size:15px;white-space:nowrap;color:var(--soft)}
+.say{display:flex;align-items:center;gap:8px}
+.bub{flex:1;min-height:46px;background:var(--card);border-radius:16px;padding:6px 14px;display:flex;align-items:center;gap:8px;position:relative;margin-left:8px}
+.bub::before{content:"";position:absolute;left:-8px;top:50%;margin-top:-7px;border:7px solid transparent;border-right:9px solid var(--card);border-left:0}
+.bub b{font-family:Jua;font-weight:400;font-size:24px;line-height:1.1}
+.bub small{margin-left:auto;color:var(--soft);font-size:13px;white-space:nowrap}
+.bub.empty{color:var(--soft);font-size:15px}
+.sb{min-height:46px;padding:0 14px;border:0;border-radius:14px;background:var(--k);color:#fff;font-family:Jua;font-size:18px;white-space:nowrap;box-shadow:0 3px 0 #0002}
+.sg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.sg button{min-height:64px;border-radius:18px;border:3px solid var(--line);background:var(--bg);font-family:Jua;font-size:22px}
+.sg button[aria-pressed=true]{border-color:var(--k);background:color-mix(in srgb,var(--k) 18%,var(--card))}
 .gv{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 body[data-v=gauge] .gv{display:grid}
 .gc{background:light-dark(color-mix(in srgb,var(--k) 12%,#fff),color-mix(in srgb,var(--k) 18%,#13202b));border:3px solid var(--k);border-radius:28px;padding:22px;text-align:center;display:grid;gap:14px;justify-items:center}
@@ -184,6 +194,7 @@ input[type=time],input[type=text]{font:inherit;font-size:16px;min-height:44px;pa
   <p class="note route">카드를 누르면 '다 했어!' 도장이 찍혀요. 다음 날 아침이면 저절로 처음부터 시작해요.</p>
 </main>
 
+<dialog id="sayd"><div class="dlg" id="sayc"></div></dialog>
 <div class="pop" id="pop" role="status"><div id="popc"></div></div>
 <dialog id="dlg"><form class="dlg" id="form">
   <h2>설정</h2>
@@ -227,6 +238,8 @@ chick:['병아리',`<ellipse cx="50" cy="94" rx="28" ry="4" fill="#0002"/><path 
 const chOf=k=>CH[k.ch]?k.ch:'whale';
 const chSvg=(k,cls)=>`<svg class="${cls}" viewBox="0 0 100 100" aria-hidden="true">${CH[chOf(k)][1]}</svg>`;
 let G=null;
+const SAY=['사랑해요','고마워요','굿모닝','굿나잇','배고파요','목말라요','졸려요','놀고 싶어요','안아 주세요','심심해요','미안해요','화장실 갈래요'];
+let SM={};
 const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}};
 const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 let cfg=load('md-cfg3',null);
@@ -234,7 +247,7 @@ if(!cfg){const o=load('md-cfg2',null);cfg=JSON.parse(JSON.stringify(DEF));
   if(o){cfg.start=o.start;cfg.dep=o.dep;cfg.dad=o.dad;cfg.mom=o.mom;(o.kids||[]).slice(0,2).forEach((k,i)=>{cfg.kids[i].name=k.name;if(k.tasks)cfg.kids[i].am=k.tasks})}}
 let view=autoView(),lastAuto=view;
 ['whale','fox'].forEach((c,i)=>{if(cfg.kids[i]&&!cfg.kids[i].ch)cfg.kids[i].ch=c});
-G=load('md-gauge',{pts:[0,0],aw:{}});
+G=load('md-gauge',{pts:[0,0],aw:{}});SM=load('md-say',{});
 const gsave=()=>save('md-gauge',G);
 const gcells=(n,lab)=>Array.from({length:10},(_,i)=>`<i class="${i<n?'on':''}">${lab?(i<n?'★':i+1):''}</i>`).join('');
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
@@ -258,6 +271,7 @@ function cards(){
   fresh();const r=RT[view]?view:'am';
   $('kg').innerHTML=cfg.kids.map((k,ki)=>{const T=k[r],d=doneOf(r+ki),next=T.findIndex(t=>!d.includes(t)),n=T.filter(t=>d.includes(t)).length;
     return `<div class="kc" style="--k:${KC[ki%2]}"><div class="kh">${chSvg(k,'av')}<h2>${esc(k.name)}</h2><div class="hp" aria-label="칭찬스티커 ${G.pts[ki]} / 10"><div class="gauge">${gcells(G.pts[ki])}</div><b>${G.pts[ki]}/10</b></div><span class="cnt">${n} / ${T.length}</span></div>
+    <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<div class="bub"><b>${esc(SM[ki].t)}</b><small>${esc(SM[ki].at)}</small></div>`:'<div class="bub empty">버튼을 눌러 하고 싶은 말을 골라요</div>'}</div>
     <div class="cards">${T.map((t,i)=>`<button class="c${d.includes(t)?' done':''}${i===next?' cur':''}" data-k="${ki}" data-t="${t}" aria-pressed="${d.includes(t)}" aria-label="${esc(k.name)} ${ICONS[t][0]}"><span class="n">${i+1}</span>${i===next?'<span class="badge">지금!</span>':''}<svg class="pic" viewBox="0 0 120 120" aria-hidden="true">${ICONS[t][1]}</svg><span class="nm">${ICONS[t][0]}</span><span class="stamp"><span>다 했어!</span></span></button>`).join('')}</div>
     <div class="all${T.length&&next===-1?' on':''}">${esc(k.name)} ${r==='am'?'준비 끝! 최고야':'다 했다! 이제 놀자'}</div></div>`}).join('');
 }
@@ -365,10 +379,20 @@ $('form').addEventListener('submit',e=>{e.preventDefault();
   $('dlg').close();nav();cards();tick()});
 
 $('nav').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;view=b.dataset.v;nav()});
-$('kg').addEventListener('click',e=>{const b=e.target.closest('.c');if(!b)return;fresh();
+$('kg').addEventListener('click',e=>{const sb=e.target.closest('[data-say]');if(sb){sayOpen(+sb.dataset.say);return}
+  const b=e.target.closest('.c');if(!b)return;fresh();
   const ki=+b.dataset.k,key=(RT[view]?view:'am')+ki,d=prog.done[key]=doneOf(key),t=b.dataset.t,j=d.indexOf(t);
   if(j>=0)d.splice(j,1);else{d.push(t);const r=b.getBoundingClientRect();if(!matchMedia('(prefers-reduced-motion: reduce)').matches)burst(r.left+r.width/2,r.top+r.height/2)}
   save('md-prog2',prog);award(RT[view]?view:'am',ki);cards()});
+function sayOpen(ki){const k=cfg.kids[ki];
+  $('sayc').style.setProperty('--k',KC[ki%2]);
+  $('sayc').innerHTML=`<h2>${esc(k.name)} · 하고 싶은 말</h2><div class="sg">${SAY.map(t=>`<button type="button" data-st="${esc(t)}" data-ki="${ki}" aria-pressed="${SM[ki]&&SM[ki].t===t}">${esc(t)}</button>`).join('')}</div>
+  <div class="row"><button type="button" class="btn ghost" data-sclr="${ki}">지우기</button><span class="sp"></span><button type="button" class="btn ghost" data-sx="1">닫기</button></div>`;
+  $('sayd').showModal()}
+$('sayc').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.st){const n=new Date();SM[b.dataset.ki]={t:b.dataset.st,at:fmt(n.getHours()*60+n.getMinutes())}}
+  else if(b.dataset.sclr!==undefined)delete SM[b.dataset.sclr];
+  save('md-say',SM);$('sayd').close();cards()});
 $('pop').onclick=()=>$('pop').classList.remove('on');
 $('gv').addEventListener('click',e=>{const b=e.target.closest('[data-reset]');if(!b)return;G.pts[+b.dataset.reset]=0;gsave();gauge()});
 $('fs').onclick=()=>{const el=document.documentElement;try{const p=(el.requestFullscreen||el.webkitRequestFullscreen)?.call(el);p&&p.catch&&p.catch(()=>{})}catch(e){}};
