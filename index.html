@@ -573,7 +573,6 @@ function homePage(){fresh();const n=new Date(),td=ymd(n),t0=new Date(n.getFullYe
     return `<div class="hc hk" style="--k:${KC[ki%2]}" data-go="${ki}">${avatar(ki,'av2')}<h2>${esc(k.name)}</h2>
     <div class="rp">${row('am','등원')}${row('pm','하원')}</div>
     <div class="hp" aria-label="칭찬스티커 ${G.pts[ki]} / 10"><div class="gauge">${gcells(G.pts[ki])}</div><b>${G.pts[ki]}/10</b></div>
-    <button class="stb" data-study="${ki}">${gem(2,true)}공부했어요 · 보석 받기</button>
     <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<button class="bub" data-again="${ki}">${sayIco(SM[ki].t)}<b>${esc(SM[ki].t)}</b></button>`:'<div class="bub empty">말을 골라요</div>'}</div></div>`};
   $('hv').innerHTML=`<div class="hc"><h3>오늘 가족 일정 <small>${dlabel(td)}</small></h3>${ev}<h3 style="margin-top:6px">다가오는 일정 <small>7일 이내</small></h3>${dd}</div>${cfg.kids.map(kid).join('')}`;
 }
