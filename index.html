@@ -372,7 +372,7 @@ input[type=time],input[type=text],select{font:inherit;font-size:16px;min-height:
     </div>
   </section>
   <section class="kg route" id="kg" aria-label="아이별 아침 할 일"></section>
-  <p class="note route">카드를 누르면 '다 했어!' 도장이 찍혀요. 다음 날 아침이면 저절로 처음부터 시작해요.</p>
+  <p class="note route">카드를 누르면 '클리어!' 도장이 찍혀요. 다음 날 아침이면 저절로 처음부터 시작해요.</p>
 </main>
 
 <dialog id="noted"><form class="dlg" id="nform"><div class="dh"><h2 tabindex="-1" autofocus>엄마 아빠가 남기는 말</h2><button type="button" class="xb" id="nx" aria-label="닫기">×</button></div>
@@ -511,7 +511,7 @@ function cards(){
   $('kg').innerHTML=cfg.kids.map((k,ki)=>{const T=k[r],d=doneOf(r+ki),next=T.findIndex(t=>!d.includes(t)),n=T.filter(t=>d.includes(t)).length;
     return `<div class="kc" style="--k:${KC[ki%2]}"><div class="kh">${avatar(ki,'av')}<h2>${esc(k.name)}</h2><div class="hp" aria-label="칭찬스티커 ${G.pts[ki]} / 10"><div class="gauge">${gcells(G.pts[ki])}</div><b>${G.pts[ki]}/10</b></div><span class="cnt">${n} / ${T.length}</span></div>
     <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<button class="bub" data-again="${ki}" aria-label="다시 듣기: ${esc(SM[ki].t)}">${sayIco(SM[ki].t)}<b>${esc(SM[ki].t)}</b><small>${esc(SM[ki].at)}</small></button>`:'<div class="bub empty">버튼을 눌러 하고 싶은 말을 골라요</div>'}</div>
-    <div class="cards">${T.map((t,i)=>`<button class="c${d.includes(t)?' done':''}" data-k="${ki}" data-t="${t}" aria-pressed="${d.includes(t)}" aria-label="${esc(k.name)} ${ICONS[t][0]}"><span class="n">${i+1}</span><svg class="pic" viewBox="0 0 120 120" aria-hidden="true">${ICONS[t][1]}</svg><span class="nm">${ICONS[t][0]}</span><span class="stamp"><span>다 했어!</span></span></button>`).join('')}</div>
+    <div class="cards">${T.map((t,i)=>`<button class="c${d.includes(t)?' done':''}" data-k="${ki}" data-t="${t}" aria-pressed="${d.includes(t)}" aria-label="${esc(k.name)} ${ICONS[t][0]}"><span class="n">${i+1}</span><svg class="pic" viewBox="0 0 120 120" aria-hidden="true">${ICONS[t][1]}</svg><span class="nm">${ICONS[t][0]}</span><span class="stamp"><span>클리어!</span></span></button>`).join('')}</div>
     <div class="all${T.length&&next===-1?' on':''}">${esc(k.name)} ${r==='am'?'준비 끝! 최고야':'다 했다! 이제 놀자'}</div></div>`}).join('');
 }
 const WHO=()=>[['all','공통','#2fa84f'],['dad',cfg.dad,'#7b6cd9'],['mom',cfg.mom,'#e05aa0'],['k0',cfg.kids[0].name,KC[0]],['k1',cfg.kids[1].name,KC[1]]];
