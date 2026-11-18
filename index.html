@@ -83,14 +83,16 @@ main{padding:22px max(2.5vw,12px) 24px;display:grid;gap:18px}
 .hp .gauge i.on{background:var(--k)}
 .hp b{font-family:Jua;font-weight:400;font-size:15px;white-space:nowrap;color:var(--soft)}
 .say{display:flex;align-items:center;gap:8px}
-.bub{flex:1;min-height:46px;background:var(--card);border-radius:16px;padding:6px 14px;display:flex;align-items:center;gap:8px;position:relative;margin-left:8px}
+.bub{border:0;color:inherit;text-align:left;flex:1;min-height:46px;background:var(--card);border-radius:16px;padding:6px 14px;display:flex;align-items:center;gap:8px;position:relative;margin-left:8px}
 .bub::before{content:"";position:absolute;left:-8px;top:50%;margin-top:-7px;border:7px solid transparent;border-right:9px solid var(--card);border-left:0}
+.bub svg{width:36px;height:36px;flex:none}
+.sg svg{width:52px;height:52px;display:block;margin:0 auto 4px}
 .bub b{font-family:Jua;font-weight:400;font-size:24px;line-height:1.1}
 .bub small{margin-left:auto;color:var(--soft);font-size:13px;white-space:nowrap}
 .bub.empty{color:var(--soft);font-size:15px}
 .sb{min-height:46px;padding:0 14px;border:0;border-radius:14px;background:var(--k);color:#fff;font-family:Jua;font-size:18px;white-space:nowrap;box-shadow:0 3px 0 #0002}
 .sg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.sg button{min-height:64px;border-radius:18px;border:3px solid var(--line);background:var(--bg);font-family:Jua;font-size:22px}
+.sg button{min-height:110px;padding:8px 4px;border-radius:18px;border:3px solid var(--line);background:var(--bg);font-family:Jua;font-size:22px}
 .sg button[aria-pressed=true]{border-color:var(--k);background:color-mix(in srgb,var(--k) 18%,var(--card))}
 .gv{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 body[data-v=gauge] .gv{display:grid}
@@ -238,7 +240,18 @@ chick:['병아리',`<ellipse cx="50" cy="94" rx="28" ry="4" fill="#0002"/><path 
 const chOf=k=>CH[k.ch]?k.ch:'whale';
 const chSvg=(k,cls)=>`<svg class="${cls}" viewBox="0 0 100 100" aria-hidden="true">${CH[chOf(k)][1]}</svg>`;
 let G=null;
-const SAY=['사랑해요','고마워요','굿모닝','굿나잇','배고파요','목말라요','졸려요','놀고 싶어요','안아 주세요','심심해요','미안해요','화장실 갈래요'];
+const L='stroke="#2b4a5e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
+const SAY=[
+['배고파요',`<path d="M8 24h32a16 14 0 0 1-32 0z" fill="#8fd0f5" ${L}/><ellipse cx="24" cy="24" rx="14" ry="4" fill="#fff" ${L}/><path d="M18 16q-3-4 0-8M26 16q-3-4 0-8" fill="none" stroke="#9fb3c0" stroke-width="2.5" stroke-linecap="round"/><path d="M38 6l-8 14" ${L}/>`],
+['목말라요',`<path d="M12 12h24l-3 30H15z" fill="#e6f4ff" ${L}/><path d="M14 22h20l-2 20H16z" fill="#5ab3f0"/><path d="M12 12h24l-3 30H15z" fill="none" ${L}/><path d="M38 4q4 6 0 9q-4-3 0-9z" fill="#5ab3f0" ${L}/>`],
+['화장실 갈래요',`<rect x="26" y="6" width="14" height="16" rx="3" fill="#e6edf2" ${L}/><path d="M8 22h32q0 10-9 12v8H19v-8q-11-2-11-12z" fill="#fff" ${L}/><ellipse cx="24" cy="22" rx="16" ry="4" fill="#8fd0f5" ${L}/>`],
+['졸려요',`<path d="M30 8a16 16 0 1 0 10 26A13 13 0 0 1 30 8z" fill="#ffd23f" ${L}/><path d="M32 6h7l-7 8h7" fill="none" stroke="#7b6cd9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`],
+['아파요',`<g transform="rotate(-35 24 24)"><rect x="4" y="16" width="40" height="16" rx="8" fill="#ffd8b8" ${L}/><rect x="17" y="16" width="14" height="16" fill="#f4c49c" ${L}/><circle cx="21" cy="21" r="1.2" fill="#2b4a5e"/><circle cx="27" cy="21" r="1.2" fill="#2b4a5e"/><circle cx="21" cy="27" r="1.2" fill="#2b4a5e"/><circle cx="27" cy="27" r="1.2" fill="#2b4a5e"/></g>`],
+['도와주세요',`<path d="M14 26V12a3 3 0 0 1 6 0v10V8a3 3 0 0 1 6 0v14V10a3 3 0 0 1 6 0v14v-8a3 3 0 0 1 6 0v14q0 14-14 14q-8 0-12-6l-6-10q-2-4 2-5t6 4z" fill="#ffd8b8" ${L}/><path d="M4 8l4 3M6 18h4M40 4l-3 4" stroke="#ffc928" stroke-width="3" stroke-linecap="round"/>`]];
+const sayIco=t=>{const x=SAY.find(a=>a[0]===t);return x?`<svg viewBox="0 0 48 48" aria-hidden="true">${x[1]}</svg>`:''};
+function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.rate=.9;
+  const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.replace('_','-').startsWith('ko'));if(v)u.voice=v;
+  speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
 let SM={};
 const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}};
 const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
@@ -271,7 +284,7 @@ function cards(){
   fresh();const r=RT[view]?view:'am';
   $('kg').innerHTML=cfg.kids.map((k,ki)=>{const T=k[r],d=doneOf(r+ki),next=T.findIndex(t=>!d.includes(t)),n=T.filter(t=>d.includes(t)).length;
     return `<div class="kc" style="--k:${KC[ki%2]}"><div class="kh">${chSvg(k,'av')}<h2>${esc(k.name)}</h2><div class="hp" aria-label="칭찬스티커 ${G.pts[ki]} / 10"><div class="gauge">${gcells(G.pts[ki])}</div><b>${G.pts[ki]}/10</b></div><span class="cnt">${n} / ${T.length}</span></div>
-    <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<div class="bub"><b>${esc(SM[ki].t)}</b><small>${esc(SM[ki].at)}</small></div>`:'<div class="bub empty">버튼을 눌러 하고 싶은 말을 골라요</div>'}</div>
+    <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<button class="bub" data-again="${ki}" aria-label="다시 듣기: ${esc(SM[ki].t)}">${sayIco(SM[ki].t)}<b>${esc(SM[ki].t)}</b><small>${esc(SM[ki].at)}</small></button>`:'<div class="bub empty">버튼을 눌러 하고 싶은 말을 골라요</div>'}</div>
     <div class="cards">${T.map((t,i)=>`<button class="c${d.includes(t)?' done':''}${i===next?' cur':''}" data-k="${ki}" data-t="${t}" aria-pressed="${d.includes(t)}" aria-label="${esc(k.name)} ${ICONS[t][0]}"><span class="n">${i+1}</span>${i===next?'<span class="badge">지금!</span>':''}<svg class="pic" viewBox="0 0 120 120" aria-hidden="true">${ICONS[t][1]}</svg><span class="nm">${ICONS[t][0]}</span><span class="stamp"><span>다 했어!</span></span></button>`).join('')}</div>
     <div class="all${T.length&&next===-1?' on':''}">${esc(k.name)} ${r==='am'?'준비 끝! 최고야':'다 했다! 이제 놀자'}</div></div>`}).join('');
 }
@@ -380,17 +393,18 @@ $('form').addEventListener('submit',e=>{e.preventDefault();
 
 $('nav').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;view=b.dataset.v;nav()});
 $('kg').addEventListener('click',e=>{const sb=e.target.closest('[data-say]');if(sb){sayOpen(+sb.dataset.say);return}
+  const ag=e.target.closest('[data-again]');if(ag){const m=SM[ag.dataset.again];if(m)speak(m.t);return}
   const b=e.target.closest('.c');if(!b)return;fresh();
   const ki=+b.dataset.k,key=(RT[view]?view:'am')+ki,d=prog.done[key]=doneOf(key),t=b.dataset.t,j=d.indexOf(t);
   if(j>=0)d.splice(j,1);else{d.push(t);const r=b.getBoundingClientRect();if(!matchMedia('(prefers-reduced-motion: reduce)').matches)burst(r.left+r.width/2,r.top+r.height/2)}
   save('md-prog2',prog);award(RT[view]?view:'am',ki);cards()});
 function sayOpen(ki){const k=cfg.kids[ki];
   $('sayc').style.setProperty('--k',KC[ki%2]);
-  $('sayc').innerHTML=`<h2>${esc(k.name)} · 하고 싶은 말</h2><div class="sg">${SAY.map(t=>`<button type="button" data-st="${esc(t)}" data-ki="${ki}" aria-pressed="${SM[ki]&&SM[ki].t===t}">${esc(t)}</button>`).join('')}</div>
+  $('sayc').innerHTML=`<h2>${esc(k.name)} · 하고 싶은 말</h2><div class="sg">${SAY.map(([t])=>`<button type="button" data-st="${esc(t)}" data-ki="${ki}" aria-pressed="${SM[ki]&&SM[ki].t===t}">${sayIco(t)}${esc(t)}</button>`).join('')}</div>
   <div class="row"><button type="button" class="btn ghost" data-sclr="${ki}">지우기</button><span class="sp"></span><button type="button" class="btn ghost" data-sx="1">닫기</button></div>`;
   $('sayd').showModal()}
 $('sayc').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.st){const n=new Date();SM[b.dataset.ki]={t:b.dataset.st,at:fmt(n.getHours()*60+n.getMinutes())}}
+  if(b.dataset.st){const n=new Date();SM[b.dataset.ki]={t:b.dataset.st,at:fmt(n.getHours()*60+n.getMinutes())};speak(b.dataset.st)}
   else if(b.dataset.sclr!==undefined)delete SM[b.dataset.sclr];
   save('md-say',SM);$('sayd').close();cards()});
 $('pop').onclick=()=>$('pop').classList.remove('on');
