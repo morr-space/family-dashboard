@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>아침 준비 대시보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
+<style>
+/*
+VOICE: 다정하고 또렷하게 — 다섯 살이 멀리서 보고도 아는 화면
+IDEA: 유치원 가는 길 — 아침 하늘, 잔디밭, 출발까지 걸어가는 병아리
+PICTURE: 할 일 카드 그림 + 시간 따라 걷는 병아리 길
+COLOUR and TYPE: 하늘색 띠, 잔디 초록, 해님 노랑 포인트 / Jua + Gowun Dodum
+LAYOUT: 위 시계·날씨, 가운데 출발 카운트다운, 아래 할 일 카드 4장
+*/
+:root{color-scheme:light dark;
+--bg:light-dark(#eef7e4,#13202b);--sky:light-dark(#8fd0f5,#1d3b5c);--sky2:light-dark(#cdeefc,#284c70);
+--card:light-dark(#fff,#1d2c38);--ink:light-dark(#22303a,#eef3f6);--soft:light-dark(#5f6f7a,#a9b8c2);
+--line:light-dark(#d7e3cf,#2f4252);--grass:light-dark(#5cb85c,#4fa35a);--sun:light-dark(#ffc928,#ffcf3f);
+--hot:#ff6b4a;--ok:#2fa84f}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Gowun Dodum",system-ui,sans-serif;overflow-x:clip;-webkit-user-select:none;user-select:none}
+h1,h2,.jua{font-family:Jua,"Gowun Dodum",sans-serif;font-weight:400}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.top{background:linear-gradient(var(--sky),var(--sky2));padding:12px max(2.5vw,12px) 18px;position:relative}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:12px;background:repeating-linear-gradient(90deg,var(--grass) 0 14px,light-dark(#7ccc72,#5bb266) 14px 28px)}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tab{min-height:44px;padding:6px 18px;border-radius:999px;border:2px solid #fff8;background:#ffffff55;font-family:Jua;font-size:19px}
+.tab[aria-pressed=true]{background:var(--card);border-color:var(--card);box-shadow:0 3px 0 #0002}
+.sp{flex:1}
+.ib{width:44px;height:44px;border-radius:50%;border:0;background:#ffffff66;display:grid;place-items:center}
+.ib svg{width:22px;height:22px}
+.head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:16px;align-items:center;margin-top:10px}
+.date{font-family:Jua;font-size:24px}
+.clock{font-family:Jua;font-size:clamp(64px,11vw,120px);line-height:.95;display:flex;align-items:baseline;gap:10px;color:#fff;text-shadow:0 4px 0 #2a6d9a55;-webkit-text-stroke:2px #2a5f86}
+.clock small{font-size:24px;-webkit-text-stroke:0;color:var(--ink);text-shadow:none}
+.wx{background:var(--card);border-radius:20px;padding:12px 14px;display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:14px;align-items:center;box-shadow:0 4px 0 #0001}
+.pm{border-radius:14px;padding:8px 10px;text-align:center;color:#fff;font-size:13px;min-width:74px}
+.pm b{display:block;font-family:Jua;font-size:20px;font-weight:400}
+.now{display:flex;align-items:center;gap:8px}
+.now svg{width:52px;height:52px}
+.now .t{font-family:Jua;font-size:44px;line-height:1}
+.now .d{font-size:13px;color:var(--soft)}
+.hrs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.hr{background:light-dark(#eef6fb,#253747);border-radius:12px;text-align:center;padding:4px 2px;font-size:13px}
+.hr svg{width:26px;height:26px;display:block;margin:0 auto}
+.hr b{font-family:Jua;font-weight:400;font-size:17px;display:block}
+.hr i{font-style:normal;color:var(--soft);font-size:12px}.hr i.wet{color:#2f7fd1;font-weight:700}
+.tip{grid-column:1/-1;font-size:15px;border-top:1px dashed var(--line);padding-top:8px}
+.tip b{color:#2f7fd1}
+main{padding:22px max(2.5vw,12px) 24px;display:grid;gap:18px}
+.go{background:var(--card);border-radius:22px;padding:14px 20px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:center;box-shadow:0 4px 0 #0001}
+.go .lbl{font-size:16px;color:var(--soft)}
+.go h2{margin:0;font-size:clamp(30px,4vw,44px);line-height:1.05}
+.go h2 em{font-style:normal;color:var(--c,var(--ok))}
+.road{position:relative;height:64px}
+.track{position:absolute;left:0;right:56px;top:30px;height:20px;border-radius:999px;background:light-dark(#efeee6,#2b3b48);border:2px solid var(--line);overflow:hidden}
+.fill{height:100%;background:var(--c,var(--ok));width:0;transition:width 1s}
+.chick{position:absolute;top:-4px;width:56px;height:56px;transform:translateX(-50%);transition:left 1s}
+.school{position:absolute;right:0;top:4px;width:52px;height:56px}
+.dep{position:absolute;right:0;bottom:-18px;font-size:13px;color:var(--soft)}
+.kg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.kc{background:light-dark(color-mix(in srgb,var(--k) 12%,#fff),color-mix(in srgb,var(--k) 18%,#13202b));border:3px solid var(--k);border-radius:26px;padding:12px 12px 14px;display:grid;gap:10px;align-content:start}
+.kh{display:flex;align-items:center;gap:10px}
+.kh .av{width:46px;height:46px;border-radius:50%;background:var(--k);color:#fff;display:grid;place-items:center;font-family:Jua;font-size:22px}
+.kh h2{margin:0;font-size:30px;line-height:1}
+.kh .cnt{margin-left:auto;font-family:Jua;font-size:20px;background:var(--card);border-radius:999px;padding:4px 14px}
+.kc .all{display:none;text-align:center;font-family:Jua;font-size:24px;color:var(--ok);background:var(--card);border-radius:16px;padding:6px}
+.kc .all.on{display:block}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px}
+.c{position:relative;background:var(--card);border:3px solid var(--line);border-radius:20px;padding:12px 6px 12px;text-align:center;min-height:186px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-shadow:0 5px 0 #0001;transition:transform .15s}
+.c:active{transform:scale(.97)}
+.c.cur{border-color:var(--sun);box-shadow:0 0 0 5px light-dark(#fff1b8,#5a4a12),0 5px 0 #0001}
+.n{position:absolute;left:8px;top:8px;width:28px;height:28px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-family:Jua;font-size:16px}
+.badge{position:absolute;right:6px;top:8px;background:var(--sun);color:#3a2a00;border-radius:999px;padding:2px 9px;font-family:Jua;font-size:14px}
+.c svg.pic{width:min(110px,86%);aspect-ratio:1;margin-top:20px}
+.c .nm{font-family:Jua;font-size:clamp(18px,1.8vw,23px);line-height:1.15;word-break:keep-all}
+.c.done .pic,.c.done .nm{opacity:.35}
+.stamp{position:absolute;inset:0;display:none;place-items:center;pointer-events:none}
+.c.done .stamp{display:grid}
+.stamp span{transform:rotate(-12deg);border:5px solid var(--ok);color:var(--ok);border-radius:18px;padding:4px 10px;font-family:Jua;font-size:22px;background:light-dark(#ffffffd9,#1d2c38d9)}
+.pv{display:none;background:var(--card);border-radius:26px;padding:40px 24px;text-align:center}
+.pv h2{margin:0 0 8px;font-size:40px}
+body[data-v=dad] .pv,body[data-v=mom] .pv{display:block}
+body[data-v=dad] .route,body[data-v=mom] .route{display:none}
+body[data-v=pm] #go{display:none}
+.home{display:none;background:var(--card);border-radius:22px;padding:12px 20px;align-items:center;gap:16px;box-shadow:0 4px 0 #0001}
+body[data-v=pm] .home{display:flex}
+.home svg{width:64px;height:64px;flex:none}
+.home h2{margin:0;font-size:clamp(28px,3.6vw,40px);line-height:1.1}
+.home p{margin:2px 0 0;color:var(--soft)}
+.note{font-size:13px;color:var(--soft);text-align:center}
+.burst{position:fixed;width:12px;height:12px;border-radius:3px;pointer-events:none;animation:fly .9s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(400deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){.burst{display:none}.fill,.chick{transition:none}}
+dialog{border:0;border-radius:24px;padding:0;width:min(620px,94vw);max-height:90vh;background:var(--card);color:var(--ink)}
+dialog::backdrop{background:#0006}
+.dlg{padding:20px 22px;display:grid;gap:14px}
+.dlg h2{margin:0;font-size:28px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row label{min-width:90px}
+input[type=time],input[type=text]{font:inherit;font-size:16px;min-height:44px;padding:6px 12px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.kid{border:2px solid var(--line);border-radius:16px;padding:12px;display:grid;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:6px 14px;border-radius:999px;border:2px solid var(--line);background:var(--bg)}
+.chip[aria-pressed=true]{background:var(--sun);border-color:var(--sun);color:#3a2a00}
+.btn{min-height:44px;padding:8px 18px;border-radius:14px;border:0;background:var(--grass);color:#fff;font-family:Jua;font-size:18px}
+.btn.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
+@media(max-width:820px){.head{grid-template-columns:1fr}.go{grid-template-columns:1fr;gap:6px}.kg{grid-template-columns:1fr}}
+@media(max-width:600px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.wx{grid-template-columns:auto minmax(0,1fr)}.wx .hrs{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <div id="nav" class="bar" role="group" aria-label="화면 선택"></div>
+    <span class="sp"></span>
+    <button class="ib" id="fs" aria-label="전체 화면"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    <button class="ib" id="gear" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v3M12 18.2v3M2.8 12h3M18.2 12h3M5.5 5.5l2.1 2.1M16.4 16.4l2.1 2.1M5.5 18.5l2.1-2.1M16.4 7.6l2.1-2.1"/></svg></button>
+  </div>
+  <div class="head">
+    <div>
+      <div class="date" id="date">날짜</div>
+      <div class="clock"><small id="ampm">오전</small><span id="time">0:00</span></div>
+    </div>
+    <div class="wx" id="wx" aria-live="polite">
+      <div class="pm" id="pm" style="background:#9aa5ad">미세먼지<b>…</b></div>
+      <div class="now" id="now"><span class="d">날씨 불러오는 중…</span></div>
+      <div class="hrs" id="hrs"></div>
+      <div class="tip" id="tip">분당 날씨를 확인하고 있어요</div>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="pv" id="pv"></section>
+  <section class="home route" id="home"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 30L32 8l26 22" fill="none" stroke="#ff6b4a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 28v28h40V28L32 12z" fill="#fff4d6" stroke="#c9a26a" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="38" width="12" height="18" rx="2" fill="#8a5a2b"/><circle cx="35" cy="47" r="1.6" fill="#ffd23f"/><path d="M44 18v-8h6v13" fill="#c9a26a"/></svg><div><h2>어서 와! 오늘도 수고했어</h2><p>집에 오면 차례대로 해요. 다 하면 놀 시간!</p></div></section>
+  <section class="go route" id="go">
+    <div><div class="lbl" id="golbl">유치원 출발까지</div><h2 id="goh">—</h2></div>
+    <div class="road">
+      <div class="track"><div class="fill" id="fill"></div></div>
+      <svg class="chick" id="chick" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="58" rx="16" ry="3" fill="#0002"/><path d="M24 50l-3 6M40 50l3 6" stroke="#f08a24" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="34" r="20" fill="#ffd93b"/><path d="M14 30q-6 6 2 12" fill="#ffc400"/><circle cx="25" cy="30" r="3" fill="#2b2b2b"/><circle cx="39" cy="30" r="3" fill="#2b2b2b"/><circle cx="26" cy="29" r="1" fill="#fff"/><circle cx="40" cy="29" r="1" fill="#fff"/><path d="M29 36l3 4 3-4z" fill="#f08a24"/><circle cx="20" cy="38" r="3.5" fill="#ff9a9a" opacity=".7"/><circle cx="44" cy="38" r="3.5" fill="#ff9a9a" opacity=".7"/><path d="M30 14q2-6 6-4q-4 1-3 5" fill="#ffc400"/><path d="M12 18l38-8 2 8-38 6z" fill="#ff6b4a" opacity="0"/><path d="M18 22q14-12 28 0z" fill="#ffd93b"/></svg>
+      <svg class="school" viewBox="0 0 52 56" aria-hidden="true"><path d="M4 26L26 8l22 18z" fill="#ff6b4a"/><rect x="8" y="26" width="36" height="28" rx="2" fill="#fff4d6" stroke="#c9a26a" stroke-width="2"/><rect x="21" y="38" width="10" height="16" fill="#8a5a2b"/><circle cx="26" cy="22" r="5" fill="#fff" stroke="#c9a26a" stroke-width="2"/><rect x="11" y="31" width="7" height="7" fill="#8fd0f5"/><rect x="34" y="31" width="7" height="7" fill="#8fd0f5"/><path d="M26 8V0l8 3-8 3" fill="#ffc928"/></svg>
+      <div class="dep" id="dep">출발 오전 8:50</div>
+    </div>
+  </section>
+  <section class="kg route" id="kg" aria-label="아이별 아침 할 일"></section>
+  <p class="note route">카드를 누르면 '다 했어!' 도장이 찍혀요. 다음 날 아침이면 저절로 처음부터 시작해요.</p>
+</main>
+
+<dialog id="dlg"><form class="dlg" id="form">
+  <h2>설정</h2>
+  <div class="row"><label for="st">준비 시작</label><input type="time" id="st"><label for="dt">출발 시각</label><input type="time" id="dt"></div>
+  <div class="note" style="text-align:left">주말(토·일)에는 '쉬는 날' 화면이 나와요.</div>
+  <div id="kedit" style="display:grid;gap:12px"></div>
+  <div class="row"><span class="sp"></span><button type="button" class="btn ghost" id="cancel">취소</button><button class="btn">저장</button></div>
+</form></dialog>
+
+<script>
+{
+const $=id=>document.getElementById(id);
+const S='#2b4a5e';
+const ICONS={
+meal:['아침 먹기',`<ellipse cx="60" cy="108" rx="46" ry="6" fill="#0001"/><rect x="14" y="72" width="92" height="11" rx="5" fill="#d99a5b"/><rect x="24" y="83" width="9" height="24" rx="3" fill="#b77a3e"/><rect x="87" y="83" width="9" height="24" rx="3" fill="#b77a3e"/><ellipse cx="54" cy="52" rx="22" ry="9" fill="#fff" stroke="${S}" stroke-width="3"/><path d="M30 54h48a24 18 0 0 1-48 0z" fill="#8fd0f5" stroke="${S}" stroke-width="3"/><path d="M44 36q-5-6 0-12M56 34q-5-6 0-12" fill="none" stroke="#c9d6de" stroke-width="3" stroke-linecap="round"/><circle cx="90" cy="64" r="8" fill="#ff6b4a" stroke="${S}" stroke-width="3"/><path d="M84 30l2 34" stroke="${S}" stroke-width="3" stroke-linecap="round"/><ellipse cx="84" cy="28" rx="5" ry="7" fill="#e6edf2" stroke="${S}" stroke-width="3"/>`],
+brush:['세수·양치',`<ellipse cx="60" cy="108" rx="42" ry="6" fill="#0001"/><path d="M22 70h76l-8 34H30z" fill="#8fd0f5" stroke="${S}" stroke-width="3"/><path d="M18 70h84" stroke="${S}" stroke-width="5" stroke-linecap="round"/><g transform="rotate(-35 64 40)"><rect x="40" y="36" width="58" height="10" rx="5" fill="#ff8fb1" stroke="${S}" stroke-width="3"/><rect x="40" y="24" width="18" height="12" rx="2" fill="#fff" stroke="${S}" stroke-width="3"/></g><circle cx="30" cy="40" r="7" fill="#fff" stroke="#8fd0f5" stroke-width="3"/><circle cx="22" cy="56" r="4" fill="#fff" stroke="#8fd0f5" stroke-width="3"/><circle cx="96" cy="58" r="5" fill="#fff" stroke="#8fd0f5" stroke-width="3"/>`],
+clothes:['옷 입기',`<ellipse cx="60" cy="108" rx="40" ry="6" fill="#0001"/><path d="M42 20L22 30 8 52l18 10 8-12v52h52V50l8 12 18-10-14-22-20-10q-8 12-18 12t-18-12z" fill="#ffd23f" stroke="${S}" stroke-width="3" stroke-linejoin="round"/><path d="M48 22q12 14 24 0" fill="none" stroke="${S}" stroke-width="3"/><circle cx="72" cy="62" r="7" fill="#ff8a5b"/>`],
+bag:['가방 챙기기',`<ellipse cx="60" cy="110" rx="38" ry="6" fill="#0001"/><path d="M46 30q0-16 14-16t14 16" fill="none" stroke="${S}" stroke-width="5"/><rect x="26" y="28" width="68" height="78" rx="20" fill="#ff8a5b" stroke="${S}" stroke-width="3"/><rect x="38" y="64" width="44" height="30" rx="10" fill="#ff6b3d" stroke="${S}" stroke-width="3"/><path d="M38 74h44" stroke="${S}" stroke-width="3"/><circle cx="60" cy="46" r="7" fill="#ffd23f" stroke="${S}" stroke-width="3"/>`],
+shoes:['신발 신기',`<ellipse cx="60" cy="104" rx="48" ry="6" fill="#0001"/><path d="M14 92V58q0-8 8-8h18q4 14 18 16l40 8q10 2 10 12v6z" fill="#5ab3f0" stroke="${S}" stroke-width="3" stroke-linejoin="round"/><path d="M12 92h98v6q0 4-4 4H16q-4 0-4-4z" fill="#fff" stroke="${S}" stroke-width="3"/><path d="M44 60l8 4M50 54l8 4" stroke="#fff" stroke-width="4" stroke-linecap="round"/>`],
+coat:['겉옷 입기',`<ellipse cx="60" cy="110" rx="40" ry="6" fill="#0001"/><path d="M40 18L20 28 10 92h18l6-40v56h52V52l6 40h18L100 28 80 18q-8 12-20 12T40 18z" fill="#6fcf97" stroke="${S}" stroke-width="3" stroke-linejoin="round"/><path d="M60 30v78" stroke="${S}" stroke-width="3"/><circle cx="50" cy="56" r="3" fill="${S}"/><circle cx="50" cy="76" r="3" fill="${S}"/><rect x="66" y="70" width="14" height="12" rx="3" fill="#4fb07a" stroke="${S}" stroke-width="2"/>`],
+toilet:['화장실 가기',`<ellipse cx="60" cy="110" rx="36" ry="6" fill="#0001"/><rect x="62" y="14" width="34" height="40" rx="6" fill="#e6edf2" stroke="${S}" stroke-width="3"/><path d="M22 54h76q0 24-22 30v20H46V84q-24-6-24-30z" fill="#fff" stroke="${S}" stroke-width="3" stroke-linejoin="round"/><ellipse cx="60" cy="54" rx="38" ry="8" fill="#8fd0f5" stroke="${S}" stroke-width="3"/>`],
+hair:['머리 빗기',`<ellipse cx="60" cy="110" rx="38" ry="6" fill="#0001"/><rect x="18" y="40" width="84" height="22" rx="8" fill="#b48cf2" stroke="${S}" stroke-width="3"/><path d="M26 62v30M36 62v34M46 62v34M56 62v34M66 62v34M76 62v34M86 62v34M96 62v30" stroke="${S}" stroke-width="4" stroke-linecap="round"/><path d="M46 24q14-14 28 0q-14 10-28 0z" fill="#ff8fb1" stroke="${S}" stroke-width="3"/><circle cx="60" cy="24" r="5" fill="#ff6b8a" stroke="${S}" stroke-width="2"/>`]};
+Object.assign(ICONS,{
+hands:['손 씻기',`<ellipse cx="60" cy="110" rx="42" ry="6" fill="#0001"/><path d="M60 14v14" stroke="${S}" stroke-width="5" stroke-linecap="round"/><path d="M48 14h24" stroke="${S}" stroke-width="5" stroke-linecap="round"/><path d="M60 32v10" stroke="#5ab3f0" stroke-width="4" stroke-linecap="round" stroke-dasharray="3 4"/><path d="M30 60q-4-14 8-16l14 10q-2 10-12 12z" fill="#ffd8b8" stroke="${S}" stroke-width="3"/><path d="M90 60q4-14-8-16L68 54q2 10 12 12z" fill="#ffd8b8" stroke="${S}" stroke-width="3"/><path d="M18 74h84l-8 30H26z" fill="#8fd0f5" stroke="${S}" stroke-width="3"/><path d="M14 74h92" stroke="${S}" stroke-width="5" stroke-linecap="round"/><circle cx="46" cy="44" r="6" fill="#fff" stroke="#8fd0f5" stroke-width="3"/><circle cx="76" cy="40" r="5" fill="#fff" stroke="#8fd0f5" stroke-width="3"/><circle cx="62" cy="62" r="4" fill="#fff" stroke="#8fd0f5" stroke-width="3"/>`],
+change:['옷 갈아입기',`<ellipse cx="60" cy="110" rx="40" ry="6" fill="#0001"/><path d="M42 26L24 34 12 52l16 9 6-10v48h52V51l6 10 16-9-12-18-18-8q-8 10-18 10t-18-10z" fill="#b48cf2" stroke="${S}" stroke-width="3" stroke-linejoin="round"/><path d="M48 28q12 12 24 0" fill="none" stroke="${S}" stroke-width="3"/><path d="M50 66q10-10 20 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M66 60l5 6-7 3" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M70 80q-10 10-20 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M54 86l-5-6 7-3" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`],
+laundry:['빨래통에 넣기',`<ellipse cx="60" cy="110" rx="40" ry="6" fill="#0001"/><path d="M40 40q6-18 22-14l-4 16z" fill="#ffd23f" stroke="${S}" stroke-width="3" stroke-linejoin="round"/><path d="M62 42q8-20 24-10l-10 14z" fill="#5ab3f0" stroke="${S}" stroke-width="3" stroke-linejoin="round"/><path d="M22 44h76l-8 60H30z" fill="#f4e3c3" stroke="${S}" stroke-width="3" stroke-linejoin="round"/><path d="M30 58h60M32 74h56M34 90h52" stroke="#c9a26a" stroke-width="3"/><path d="M44 46v56M60 46v58M76 46v56" stroke="#c9a26a" stroke-width="3"/><path d="M18 44h84" stroke="${S}" stroke-width="5" stroke-linecap="round"/>`],
+sheet:['학습지 1장',`<ellipse cx="60" cy="110" rx="40" ry="6" fill="#0001"/><g transform="rotate(-6 56 62)"><rect x="24" y="18" width="64" height="86" rx="6" fill="#fff" stroke="${S}" stroke-width="3"/><path d="M34 38h30M34 52h44M34 66h44M34 80h28" stroke="#9fb3c0" stroke-width="4" stroke-linecap="round"/><circle cx="74" cy="38" r="6" fill="none" stroke="#ff6b4a" stroke-width="3"/></g><g transform="rotate(35 88 70)"><rect x="82" y="30" width="12" height="56" rx="3" fill="#ffd23f" stroke="${S}" stroke-width="3"/><path d="M82 86l6 12 6-12z" fill="#ffd8b8" stroke="${S}" stroke-width="3" stroke-linejoin="round"/><rect x="82" y="26" width="12" height="8" rx="2" fill="#ff8fb1" stroke="${S}" stroke-width="3"/></g>`]});
+const ORDER=Object.keys(ICONS);
+const RT={am:'등원',pm:'하원'};
+const autoView=()=>new Date().getHours()<12?'am':'pm';
+const AM=['meal','brush','clothes','bag'],PM=['hands','change','laundry','sheet'];
+const DEF={start:'07:50',dep:'08:50',dad:'현섭',mom:'달님',kids:[{name:'태성',am:AM,pm:PM},{name:'아성',am:AM,pm:PM}]};
+const KC=['#3d9be9','#ff8a5b'];
+const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let cfg=load('md-cfg3',null);
+if(!cfg){const o=load('md-cfg2',null);cfg=JSON.parse(JSON.stringify(DEF));
+  if(o){cfg.start=o.start;cfg.dep=o.dep;cfg.dad=o.dad;cfg.mom=o.mom;(o.kids||[]).slice(0,2).forEach((k,i)=>{cfg.kids[i].name=k.name;if(k.tasks)cfg.kids[i].am=k.tasks})}}
+let view=autoView(),lastAuto=view;
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+let prog=load('md-prog2',{day:'',done:{}});
+const fresh=()=>{if(prog.day!==today()){prog={day:today(),done:{}};save('md-prog2',prog)}};
+const doneOf=i=>prog.done[i]||[];
+const mins=s=>{const[h,m]=s.split(':').map(Number);return h*60+m};
+const fmt=m=>{const h=Math.floor(m/60),mm=m%60,ap=h<12?'오전':'오후';return ap+' '+((h%12)||12)+':'+String(mm).padStart(2,'0')};
+const DAYS='일월화수목금토';
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function nav(){
+  const V=[['am','등원 루틴'],['pm','하원 루틴'],['dad',cfg.dad+' · 아빠'],['mom',cfg.mom+' · 엄마']];
+  $('nav').innerHTML=V.map(([v,l])=>`<button class="tab" data-v="${v}" aria-pressed="${v===view}">${esc(l)}</button>`).join('');
+  document.body.dataset.v=view;
+  if(RT[view])cards();
+  else $('pv').innerHTML=`<h2>${esc(view==='dad'?cfg.dad:cfg.mom)}</h2><p>${view==='dad'?'아빠':'엄마'} 페이지예요. 일정이나 할 일을 여기에 넣을 수 있어요.</p>`;
+}
+function cards(){
+  fresh();const r=RT[view]?view:'am';
+  $('kg').innerHTML=cfg.kids.map((k,ki)=>{const T=k[r],d=doneOf(r+ki),next=T.findIndex(t=>!d.includes(t)),n=T.filter(t=>d.includes(t)).length;
+    return `<div class="kc" style="--k:${KC[ki%2]}"><div class="kh"><span class="av">${esc(k.name.slice(0,1))}</span><h2>${esc(k.name)}</h2><span class="cnt">${n} / ${T.length}</span></div>
+    <div class="cards">${T.map((t,i)=>`<button class="c${d.includes(t)?' done':''}${i===next?' cur':''}" data-k="${ki}" data-t="${t}" aria-pressed="${d.includes(t)}" aria-label="${esc(k.name)} ${ICONS[t][0]}"><span class="n">${i+1}</span>${i===next?'<span class="badge">지금!</span>':''}<svg class="pic" viewBox="0 0 120 120" aria-hidden="true">${ICONS[t][1]}</svg><span class="nm">${ICONS[t][0]}</span><span class="stamp"><span>다 했어!</span></span></button>`).join('')}</div>
+    <div class="all${T.length&&next===-1?' on':''}">${esc(k.name)} ${r==='am'?'준비 끝! 최고야':'다 했다! 이제 놀자'}</div></div>`}).join('');
+}
+function burst(x,y){for(let i=0;i<18;i++){const b=document.createElement('i');b.className='burst';const a=Math.random()*6.28,r=60+Math.random()*90;b.style.cssText=`left:${x}px;top:${y}px;background:${['#ffd23f','#ff6b4a','#5ab3f0','#6fcf97','#ff8fb1'][i%5]};--x:${Math.cos(a)*r}px;--y:${Math.sin(a)*r-40}px`;document.body.appendChild(b);setTimeout(()=>b.remove(),950)}}
+
+function tick(){
+  const n=new Date(),h=n.getHours(),m=n.getMinutes();
+  $('date').textContent=`${n.getMonth()+1}월 ${n.getDate()}일 ${DAYS[n.getDay()]}요일`;
+  $('ampm').textContent=h<12?'오전':'오후';$('time').textContent=((h%12)||12)+':'+String(m).padStart(2,'0');
+  const now=h*60+m+n.getSeconds()/60,st=mins(cfg.start),dp=mins(cfg.dep),wk=n.getDay()%6===0;
+  $('dep').textContent='출발 '+fmt(dp);
+  let pct=0,lbl='유치원 출발까지',txt,c='var(--ok)';
+  if(wk){lbl='오늘은';txt='유치원 쉬는 날이에요';pct=100;c='#b48cf2'}
+  else if(now>=dp&&now<dp+180){lbl='출발 시간이 지났어요';txt='잘 다녀와!';pct=100}
+  else if(now>=dp+180||now<st-120){lbl='다음 출발';txt=fmt(dp);pct=0;c='#9aa5ad'}
+  else{const left=Math.ceil(dp-now);pct=Math.max(0,Math.min(100,(now-st)/(dp-st)*100));
+    txt=left>=60?`<em>${Math.floor(left/60)}시간 ${left%60}분</em> 남았어요`:`<em>${left}분</em> 남았어요`;
+    c=left>15?'var(--ok)':left>5?'#f2994a':'var(--hot)'}
+  $('golbl').textContent=lbl;$('goh').innerHTML=txt;$('go').style.setProperty('--c',c);
+  $('fill').style.width=pct+'%';$('chick').style.left=`calc(28px + (100% - 112px) * ${pct/100})`;
+  if(prog.day!==today()&&RT[view]){cards()}
+  const av=autoView();if(av!==lastAuto){lastAuto=av;if(RT[view]){view=av;nav()}}
+}
+
+/* 날씨: Open-Meteo (키 필요 없음) — 분당 */
+const LAT=37.38,LON=127.12;
+const WC=c=>c===0?['맑음','sun']:c<=2?['구름 조금','part']:c===3?['흐림','cloud']:c<=48?['안개','cloud']:c<=67||(c>=80&&c<=82)?['비','rain']:c<=77||c===85||c===86?['눈','snow']:['뇌우','rain'];
+const WI={sun:`<circle cx="24" cy="24" r="10" fill="#ffc928"/><g stroke="#ffc928" stroke-width="3" stroke-linecap="round"><path d="M24 4v5M24 39v5M4 24h5M39 24h5M10 10l3.5 3.5M34.5 34.5L38 38M10 38l3.5-3.5M34.5 13.5L38 10"/></g>`,
+part:`<circle cx="18" cy="18" r="9" fill="#ffc928"/><path d="M14 38h22a8 8 0 0 0 0-16 11 11 0 0 0-21 3 7 7 0 0 0-1 13z" fill="#e6edf2" stroke="#9fb3c0" stroke-width="2"/>`,
+cloud:`<path d="M12 36h24a9 9 0 0 0 0-18 12 12 0 0 0-23 3 8 8 0 0 0-1 15z" fill="#e6edf2" stroke="#9fb3c0" stroke-width="2"/>`,
+rain:`<path d="M12 28h24a9 9 0 0 0 0-18 12 12 0 0 0-23 3 8 8 0 0 0-1 15z" fill="#e6edf2" stroke="#9fb3c0" stroke-width="2"/><path d="M16 34l-2 6M25 34l-2 6M34 34l-2 6" stroke="#2f7fd1" stroke-width="3" stroke-linecap="round"/>`,
+snow:`<path d="M12 28h24a9 9 0 0 0 0-18 12 12 0 0 0-23 3 8 8 0 0 0-1 15z" fill="#e6edf2" stroke="#9fb3c0" stroke-width="2"/><g fill="#8fd0f5"><circle cx="16" cy="37" r="3"/><circle cx="25" cy="41" r="3"/><circle cx="34" cy="37" r="3"/></g>`};
+const ico=k=>`<svg viewBox="0 0 48 48">${WI[k]}</svg>`;
+const pmGrade=(p10,p25)=>{const g10=p10<=30?0:p10<=80?1:p10<=150?2:3,g25=p25<=15?0:p25<=35?1:p25<=75?2:3;return Math.max(g10,g25)};
+async function weather(){
+  try{
+    const f=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul&forecast_days=1`).then(r=>r.json());
+    const cw=WC(f.current.weather_code),T=Math.round(f.current.temperature_2m);
+    $('now').innerHTML=`${ico(cw[1])}<div><div class="t">${T}°</div><div class="d">${cw[0]} · 최고 ${Math.round(f.daily.temperature_2m_max[0])}° 최저 ${Math.round(f.daily.temperature_2m_min[0])}°</div></div>`;
+    const H=f.hourly,show=[8,12,16,20];
+    $('hrs').innerHTML=show.map(h=>{const p=H.precipitation_probability[h];return `<div class="hr">${h}시${ico(WC(H.weather_code[h])[1])}<b>${Math.round(H.temperature_2m[h])}°</b><i class="${p>=50?'wet':''}">비 ${p}%</i></div>`}).join('');
+    const hn=new Date().getHours();let rain=null;
+    for(let h=Math.max(hn,7);h<=20;h++){if(H.precipitation_probability[h]>=50){rain=h;break}}
+    const tips=[];
+    if(rain!==null)tips.push(`<b>${rain}시쯤 비 ${H.precipitation_probability[rain]}%</b> — 우산 챙기기`);
+    if(H.temperature_2m[8]<=10)tips.push(`아침 ${Math.round(H.temperature_2m[8])}° 쌀쌀 — 겉옷 꼭`);
+    let g=-1;
+    try{const a=await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${LAT}&longitude=${LON}&current=pm10,pm2_5&timezone=Asia%2FSeoul`).then(r=>r.json());
+      const p10=Math.round(a.current.pm10),p25=Math.round(a.current.pm2_5);g=pmGrade(p10,p25);
+      const G=[['좋음','#3d9be9'],['보통','#2fa84f'],['나쁨','#f2994a'],['매우 나쁨','#e5484d']][g];
+      $('pm').style.background=G[1];$('pm').innerHTML=`미세먼지<b>${G[0]}</b>${p10} · 초 ${p25}`;
+      if(g>=2)tips.push('마스크 챙기기');
+    }catch(e){$('pm').innerHTML='미세먼지<b>—</b>'}
+    $('tip').innerHTML=tips.length?tips.join(' · '):'오늘은 특별히 챙길 것 없어요';
+  }catch(e){
+    $('now').innerHTML='<span class="d">날씨를 불러오지 못했어요</span>';
+    $('tip').textContent='이 화면을 Claude 링크로 열면 날씨가 안 보여요. 직접 올린 웹주소로 열면 분당 날씨가 나와요.';
+    $('pm').innerHTML='미세먼지<b>—</b>';
+  }
+}
+
+/* 설정 */
+let draft;
+function editor(){
+  $('st').value=draft.start;$('dt').value=draft.dep;
+  $('kedit').innerHTML=`<div class="row"><label for="pd">아빠</label><input type="text" id="pd" data-p="dad" value="${esc(draft.dad)}" maxlength="10"><label for="pm2">엄마</label><input type="text" id="pm2" data-p="mom" value="${esc(draft.mom)}" maxlength="10"></div>`+draft.kids.map((k,i)=>`<div class="kid"><div class="row"><label for="kn${i}">자녀${i+1}</label><input type="text" id="kn${i}" data-n="${i}" value="${esc(k.name)}" maxlength="10"></div><div class="note" style="text-align:left">누르는 순서대로 할 일 순서가 정해져요.</div>${['am','pm'].map(r=>`<b>${RT[r]}</b><div class="chips">${ORDER.map(t=>{const j=k[r].indexOf(t);return `<button type="button" class="chip" data-kid="${i}" data-r="${r}" data-t="${t}" aria-pressed="${j>=0}">${j>=0?(j+1)+'. ':''}${ICONS[t][0]}</button>`}).join('')}</div>`).join('')}</div>`).join('');
+}
+$('gear').onclick=()=>{draft=JSON.parse(JSON.stringify(cfg));editor();$('dlg').showModal()};
+$('cancel').onclick=()=>$('dlg').close();
+$('kedit').addEventListener('input',e=>{const i=e.target.dataset.n,p=e.target.dataset.p;if(i!==undefined)draft.kids[i].name=e.target.value;if(p)draft[p]=e.target.value});
+$('kedit').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(!b.dataset.r)return;
+  const L=draft.kids[b.dataset.kid][b.dataset.r],t=b.dataset.t,j=L.indexOf(t);
+  if(j>=0)L.splice(j,1);else L.push(t);editor()});
+$('form').addEventListener('submit',e=>{e.preventDefault();
+  draft.start=$('st').value||DEF.start;draft.dep=$('dt').value||DEF.dep;
+  draft.kids.forEach((k,i)=>{k.name=k.name.trim()||DEF.kids[i].name});
+  draft.dad=(draft.dad||'').trim()||DEF.dad;draft.mom=(draft.mom||'').trim()||DEF.mom;
+  cfg=draft;save('md-cfg3',cfg);prog.done={};save('md-prog2',prog);
+  $('dlg').close();nav();cards();tick()});
+
+$('nav').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b)return;view=b.dataset.v;nav()});
+$('kg').addEventListener('click',e=>{const b=e.target.closest('.c');if(!b)return;fresh();
+  const ki=+b.dataset.k,key=(RT[view]?view:'am')+ki,d=prog.done[key]=doneOf(key),t=b.dataset.t,j=d.indexOf(t);
+  if(j>=0)d.splice(j,1);else{d.push(t);const r=b.getBoundingClientRect();if(!matchMedia('(prefers-reduced-motion: reduce)').matches)burst(r.left+r.width/2,r.top+r.height/2)}
+  save('md-prog2',prog);cards()});
+$('fs').onclick=()=>{const el=document.documentElement;try{const p=(el.requestFullscreen||el.webkitRequestFullscreen)?.call(el);p&&p.catch&&p.catch(()=>{})}catch(e){}};
+let lock=null;
+document.addEventListener('click',()=>{if(lock||!navigator.wakeLock)return;navigator.wakeLock.request('screen').then(l=>{lock=l;l.addEventListener('release',()=>lock=null)}).catch(()=>{})});
+
+nav();cards();tick();weather();
+setInterval(tick,1000*10);setInterval(weather,1000*60*30);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){tick();cards()}});
+}
+</script>
+</body>
+</html>
