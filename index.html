@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>아침 준비 대시보드</title>
+<title>우리가족 대시보드</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
 <style>
@@ -65,7 +65,27 @@ main{padding:22px max(2.5vw,12px) 24px;display:grid;gap:18px}
 .kg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .kc{background:light-dark(color-mix(in srgb,var(--k) 12%,#fff),color-mix(in srgb,var(--k) 18%,#13202b));border:3px solid var(--k);border-radius:26px;padding:12px 12px 14px;display:grid;gap:10px;align-content:start}
 .kh{display:flex;align-items:center;gap:10px}
-.kh .av{width:46px;height:46px;border-radius:50%;background:var(--k);color:#fff;display:grid;place-items:center;font-family:Jua;font-size:22px}
+.kh .av{width:58px;height:58px;flex:none}
+.gg{display:flex;align-items:center;gap:8px}
+.gauge{flex:1;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px}
+.gauge i{height:16px;border-radius:5px;background:light-dark(#fff,#24323e);border:2px solid color-mix(in srgb,var(--k) 45%,transparent)}
+.gauge i.on{background:var(--k);border-color:var(--k)}
+.gg b{font-family:Jua;font-weight:400;font-size:17px;white-space:nowrap}
+.gv{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+body[data-v=gauge] .gv{display:grid}
+.gc{background:light-dark(color-mix(in srgb,var(--k) 12%,#fff),color-mix(in srgb,var(--k) 18%,#13202b));border:3px solid var(--k);border-radius:28px;padding:22px;text-align:center;display:grid;gap:14px;justify-items:center}
+.gc svg.big{width:150px;height:150px}
+.gc h2{margin:0;font-size:36px;line-height:1}
+.gc .gauge{width:100%;gap:6px}
+.gc .gauge i{height:58px;border-radius:12px;display:grid;place-items:center;font-family:Jua;font-style:normal;font-size:20px;color:color-mix(in srgb,var(--k) 60%,transparent)}
+.gc .gauge i.on{color:#fff}
+.gc .num{font-family:Jua;font-size:30px}.gc .num small{font-size:18px;color:var(--soft)}
+.gc.full .num{color:var(--k)}
+.pop{position:fixed;inset:0;display:none;place-items:center;background:#0005;z-index:9}
+.pop.on{display:grid}
+.pop div{background:var(--card);border-radius:30px;padding:26px 40px;text-align:center;box-shadow:0 10px 0 #0002;animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+.pop svg{width:150px;height:150px}.pop h2{margin:6px 0 0;font-size:40px}.pop p{margin:4px 0 0;font-size:20px}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
 .kh h2{margin:0;font-size:30px;line-height:1}
 .kh .cnt{margin-left:auto;font-family:Jua;font-size:20px;background:var(--card);border-radius:999px;padding:4px 14px}
 .kc .all{display:none;text-align:center;font-family:Jua;font-size:24px;color:var(--ok);background:var(--card);border-radius:16px;padding:6px}
@@ -85,7 +105,7 @@ main{padding:22px max(2.5vw,12px) 24px;display:grid;gap:18px}
 .pv{display:none;background:var(--card);border-radius:26px;padding:40px 24px;text-align:center}
 .pv h2{margin:0 0 8px;font-size:40px}
 body[data-v=dad] .pv,body[data-v=mom] .pv{display:block}
-body[data-v=dad] .route,body[data-v=mom] .route{display:none}
+body[data-v=dad] .route,body[data-v=mom] .route,body[data-v=gauge] .route{display:none}
 body[data-v=pm] #go{display:none}
 .home{display:none;background:var(--card);border-radius:22px;padding:12px 20px;align-items:center;gap:16px;box-shadow:0 4px 0 #0001}
 body[data-v=pm] .home{display:flex}
@@ -95,7 +115,7 @@ body[data-v=pm] .home{display:flex}
 .note{font-size:13px;color:var(--soft);text-align:center}
 .burst{position:fixed;width:12px;height:12px;border-radius:3px;pointer-events:none;animation:fly .9s ease-out forwards}
 @keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(400deg);opacity:0}}
-@media(prefers-reduced-motion:reduce){.burst{display:none}.fill,.chick{transition:none}}
+@media(prefers-reduced-motion:reduce){.pop div{animation:none}.burst{display:none}.fill,.chick{transition:none}}
 dialog{border:0;border-radius:24px;padding:0;width:min(620px,94vw);max-height:90vh;background:var(--card);color:var(--ink)}
 dialog::backdrop{background:#0006}
 .dlg{padding:20px 22px;display:grid;gap:14px}
@@ -109,7 +129,7 @@ input[type=time],input[type=text]{font:inherit;font-size:16px;min-height:44px;pa
 .chip[aria-pressed=true]{background:var(--sun);border-color:var(--sun);color:#3a2a00}
 .btn{min-height:44px;padding:8px 18px;border-radius:14px;border:0;background:var(--grass);color:#fff;font-family:Jua;font-size:18px}
 .btn.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
-@media(max-width:820px){.head{grid-template-columns:1fr}.go{grid-template-columns:1fr;gap:6px}.kg{grid-template-columns:1fr}}
+@media(max-width:820px){.head{grid-template-columns:1fr}.go{grid-template-columns:1fr;gap:6px}.kg,.gv{grid-template-columns:1fr}}
 @media(max-width:600px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.wx{grid-template-columns:auto minmax(0,1fr)}.wx .hrs{grid-column:1/-1}}
 </style>
 </head>
@@ -136,6 +156,7 @@ input[type=time],input[type=text]{font:inherit;font-size:16px;min-height:44px;pa
 </header>
 <main>
   <section class="pv" id="pv"></section>
+  <section class="gv" id="gv" aria-label="게이지판"></section>
   <section class="home route" id="home"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 30L32 8l26 22" fill="none" stroke="#ff6b4a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 28v28h40V28L32 12z" fill="#fff4d6" stroke="#c9a26a" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="38" width="12" height="18" rx="2" fill="#8a5a2b"/><circle cx="35" cy="47" r="1.6" fill="#ffd23f"/><path d="M44 18v-8h6v13" fill="#c9a26a"/></svg><div><h2>어서 와! 오늘도 수고했어</h2><p>집에 오면 차례대로 해요. 다 하면 놀 시간!</p></div></section>
   <section class="go route" id="go">
     <div><div class="lbl" id="golbl">유치원 출발까지</div><h2 id="goh">—</h2></div>
@@ -150,6 +171,7 @@ input[type=time],input[type=text]{font:inherit;font-size:16px;min-height:44px;pa
   <p class="note route">카드를 누르면 '다 했어!' 도장이 찍혀요. 다음 날 아침이면 저절로 처음부터 시작해요.</p>
 </main>
 
+<div class="pop" id="pop" role="status"><div id="popc"></div></div>
 <dialog id="dlg"><form class="dlg" id="form">
   <h2>설정</h2>
   <div class="row"><label for="st">준비 시작</label><input type="time" id="st"><label for="dt">출발 시각</label><input type="time" id="dt"></div>
@@ -182,12 +204,26 @@ const autoView=()=>new Date().getHours()<12?'am':'pm';
 const AM=['meal','brush','clothes','bag'],PM=['hands','change','laundry','sheet'];
 const DEF={start:'07:50',dep:'08:50',dad:'현섭',mom:'달님',kids:[{name:'태성',am:AM,pm:PM},{name:'아성',am:AM,pm:PM}]};
 const KC=['#3d9be9','#ff8a5b'];
+const O='stroke="#2b4a5e" stroke-width="3" stroke-linejoin="round"';
+const FACE=(y,c)=>`<circle cx="38" cy="${y}" r="4" fill="#2b2b2b"/><circle cx="62" cy="${y}" r="4" fill="#2b2b2b"/><circle cx="39.5" cy="${y-1.5}" r="1.3" fill="#fff"/><circle cx="63.5" cy="${y-1.5}" r="1.3" fill="#fff"/><ellipse cx="29" cy="${y+9}" rx="5" ry="3.5" fill="#ff8fa3" opacity=".7"/><ellipse cx="71" cy="${y+9}" rx="5" ry="3.5" fill="#ff8fa3" opacity=".7"/>${c}`;
+const CH={
+whale:['아기 고래',`<ellipse cx="50" cy="93" rx="32" ry="4" fill="#0002"/><path d="M50 26v-12M50 26q-2-10-10-13M50 26q2-10 10-13" stroke="#8fd0f5" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M84 58q8-16 14-10q2 8-10 16z" fill="#4aa3e6" ${O}/><path d="M10 62q0-34 40-34q36 0 36 32q0 28-38 28T10 62z" fill="#5ab3f0" ${O}/><path d="M18 70q30 14 62 0q-6 16-32 16T18 70z" fill="#d7f0ff"/>`+FACE(54,'<path d="M45 62q5 5 10 0" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>')],
+fox:['아기 여우',`<ellipse cx="50" cy="94" rx="30" ry="4" fill="#0002"/><path d="M22 44L16 10l28 20z" fill="#ff8a5b" ${O}/><path d="M78 44l6-34-28 20z" fill="#ff8a5b" ${O}/><path d="M24 36l-3-16 12 10z" fill="#ffd8c4"/><path d="M76 36l3-16-12 10z" fill="#ffd8c4"/><path d="M50 90Q12 90 12 58Q12 26 50 26T88 58Q88 90 50 90z" fill="#ff8a5b" ${O}/><path d="M14 62q20 2 36 26q16-24 36-26q-6 26-36 26T14 62z" fill="#fff"/>`+FACE(54,'<ellipse cx="50" cy="66" rx="5" ry="3.5" fill="#2b2b2b"/>')],
+bear:['아기 곰',`<ellipse cx="50" cy="94" rx="30" ry="4" fill="#0002"/><circle cx="24" cy="28" r="12" fill="#c98a4b" ${O}/><circle cx="76" cy="28" r="12" fill="#c98a4b" ${O}/><circle cx="24" cy="28" r="5" fill="#f4dcc0"/><circle cx="76" cy="28" r="5" fill="#f4dcc0"/><circle cx="50" cy="58" r="34" fill="#c98a4b" ${O}/><ellipse cx="50" cy="68" rx="15" ry="11" fill="#f4dcc0"/>`+FACE(52,'<ellipse cx="50" cy="63" rx="5" ry="3.5" fill="#2b2b2b"/><path d="M45 70q5 4 10 0" fill="none" stroke="#2b2b2b" stroke-width="2.5" stroke-linecap="round"/>')],
+chick:['병아리',`<ellipse cx="50" cy="94" rx="28" ry="4" fill="#0002"/><path d="M44 22q4-12 12-8q-8 2-6 10" fill="#ffc400" ${O}/><circle cx="50" cy="58" r="34" fill="#ffd93b" ${O}/><path d="M16 60q-10 8 2 16" fill="#ffc400" ${O}/><path d="M84 60q10 8-2 16" fill="#ffc400" ${O}/>`+FACE(52,'<path d="M44 62l6 8 6-8z" fill="#f08a24" stroke="#2b4a5e" stroke-width="2" stroke-linejoin="round"/>')]};
+const chOf=k=>CH[k.ch]?k.ch:'whale';
+const chSvg=(k,cls)=>`<svg class="${cls}" viewBox="0 0 100 100" aria-hidden="true">${CH[chOf(k)][1]}</svg>`;
+let G=null;
 const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}};
 const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 let cfg=load('md-cfg3',null);
 if(!cfg){const o=load('md-cfg2',null);cfg=JSON.parse(JSON.stringify(DEF));
   if(o){cfg.start=o.start;cfg.dep=o.dep;cfg.dad=o.dad;cfg.mom=o.mom;(o.kids||[]).slice(0,2).forEach((k,i)=>{cfg.kids[i].name=k.name;if(k.tasks)cfg.kids[i].am=k.tasks})}}
 let view=autoView(),lastAuto=view;
+['whale','fox'].forEach((c,i)=>{if(cfg.kids[i]&&!cfg.kids[i].ch)cfg.kids[i].ch=c});
+G=load('md-gauge',{pts:[0,0],aw:{}});
+const gsave=()=>save('md-gauge',G);
+const gcells=(n,lab)=>Array.from({length:10},(_,i)=>`<i class="${i<n?'on':''}">${lab?(i<n?'★':i+1):''}</i>`).join('');
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
 let prog=load('md-prog2',{day:'',done:{}});
 const fresh=()=>{if(prog.day!==today()){prog={day:today(),done:{}};save('md-prog2',prog)}};
@@ -198,18 +234,35 @@ const DAYS='일월화수목금토';
 
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function nav(){
-  const V=[['am','등원 루틴'],['pm','하원 루틴'],['dad',cfg.dad+' · 아빠'],['mom',cfg.mom+' · 엄마']];
+  const V=[['am','등원 루틴'],['pm','하원 루틴'],['gauge','게이지판'],['dad',cfg.dad+' · 아빠'],['mom',cfg.mom+' · 엄마']];
   $('nav').innerHTML=V.map(([v,l])=>`<button class="tab" data-v="${v}" aria-pressed="${v===view}">${esc(l)}</button>`).join('');
   document.body.dataset.v=view;
   if(RT[view])cards();
+  else if(view==='gauge')gauge();
   else $('pv').innerHTML=`<h2>${esc(view==='dad'?cfg.dad:cfg.mom)}</h2><p>${view==='dad'?'아빠':'엄마'} 페이지예요. 일정이나 할 일을 여기에 넣을 수 있어요.</p>`;
 }
 function cards(){
   fresh();const r=RT[view]?view:'am';
   $('kg').innerHTML=cfg.kids.map((k,ki)=>{const T=k[r],d=doneOf(r+ki),next=T.findIndex(t=>!d.includes(t)),n=T.filter(t=>d.includes(t)).length;
-    return `<div class="kc" style="--k:${KC[ki%2]}"><div class="kh"><span class="av">${esc(k.name.slice(0,1))}</span><h2>${esc(k.name)}</h2><span class="cnt">${n} / ${T.length}</span></div>
+    return `<div class="kc" style="--k:${KC[ki%2]}"><div class="kh">${chSvg(k,'av')}<h2>${esc(k.name)}</h2><span class="cnt">${n} / ${T.length}</span></div><div class="gg"><div class="gauge" aria-label="게이지 ${G.pts[ki]} / 10">${gcells(G.pts[ki])}</div><b>${G.pts[ki]>=10?'풀게이지!':G.pts[ki]+' / 10'}</b></div>
     <div class="cards">${T.map((t,i)=>`<button class="c${d.includes(t)?' done':''}${i===next?' cur':''}" data-k="${ki}" data-t="${t}" aria-pressed="${d.includes(t)}" aria-label="${esc(k.name)} ${ICONS[t][0]}"><span class="n">${i+1}</span>${i===next?'<span class="badge">지금!</span>':''}<svg class="pic" viewBox="0 0 120 120" aria-hidden="true">${ICONS[t][1]}</svg><span class="nm">${ICONS[t][0]}</span><span class="stamp"><span>다 했어!</span></span></button>`).join('')}</div>
     <div class="all${T.length&&next===-1?' on':''}">${esc(k.name)} ${r==='am'?'준비 끝! 최고야':'다 했다! 이제 놀자'}</div></div>`}).join('');
+}
+function gauge(){
+  $('gv').innerHTML=cfg.kids.map((k,ki)=>{const n=G.pts[ki],f=n>=10;
+    return `<div class="gc${f?' full':''}" style="--k:${KC[ki%2]}">${chSvg(k,'big')}<h2>${esc(k.name)}</h2><div class="gauge">${gcells(n,1)}</div>
+    <div class="num">${f?'풀게이지 달성! 정말 대단해':`${n} <small>/ 10</small>`}</div>
+    <div class="note">${f?'약속한 선물을 받을 시간이에요':`루틴을 끝까지 하면 한 칸씩 채워져요. ${10-n}칸 남았어요`}</div>
+    ${f?`<button class="btn" data-reset="${ki}">다시 0부터 시작</button>`:''}</div>`}).join('');
+}
+function pop(ki,n){const k=cfg.kids[ki];
+  $('popc').innerHTML=`${chSvg(k,'')}<h2>${n>=10?'풀게이지!':'게이지 +1'}</h2><p>${esc(k.name)} ${n} / 10${n>=10?' — 최고야!':''}</p>`;
+  $('pop').classList.add('on');clearTimeout(pop.t);pop.t=setTimeout(()=>$('pop').classList.remove('on'),n>=10?4500:2500)}
+function award(r,ki){
+  const T=cfg.kids[ki][r],d=doneOf(r+ki),ok=T.length>0&&T.every(t=>d.includes(t)),key=prog.day+r+ki;
+  for(const x in G.aw)if(!x.startsWith(prog.day))delete G.aw[x];
+  if(ok&&!G.aw[key]&&G.pts[ki]<10){G.aw[key]=1;G.pts[ki]++;gsave();pop(ki,G.pts[ki])}
+  else if(!ok&&G.aw[key]){delete G.aw[key];G.pts[ki]=Math.max(0,G.pts[ki]-1);gsave()}
 }
 function burst(x,y){for(let i=0;i<18;i++){const b=document.createElement('i');b.className='burst';const a=Math.random()*6.28,r=60+Math.random()*90;b.style.cssText=`left:${x}px;top:${y}px;background:${['#ffd23f','#ff6b4a','#5ab3f0','#6fcf97','#ff8fb1'][i%5]};--x:${Math.cos(a)*r}px;--y:${Math.sin(a)*r-40}px`;document.body.appendChild(b);setTimeout(()=>b.remove(),950)}}
 
@@ -273,12 +326,13 @@ async function weather(){
 let draft;
 function editor(){
   $('st').value=draft.start;$('dt').value=draft.dep;
-  $('kedit').innerHTML=`<div class="row"><label for="pd">아빠</label><input type="text" id="pd" data-p="dad" value="${esc(draft.dad)}" maxlength="10"><label for="pm2">엄마</label><input type="text" id="pm2" data-p="mom" value="${esc(draft.mom)}" maxlength="10"></div>`+draft.kids.map((k,i)=>`<div class="kid"><div class="row"><label for="kn${i}">자녀${i+1}</label><input type="text" id="kn${i}" data-n="${i}" value="${esc(k.name)}" maxlength="10"></div><div class="note" style="text-align:left">누르는 순서대로 할 일 순서가 정해져요.</div>${['am','pm'].map(r=>`<b>${RT[r]}</b><div class="chips">${ORDER.map(t=>{const j=k[r].indexOf(t);return `<button type="button" class="chip" data-kid="${i}" data-r="${r}" data-t="${t}" aria-pressed="${j>=0}">${j>=0?(j+1)+'. ':''}${ICONS[t][0]}</button>`}).join('')}</div>`).join('')}</div>`).join('');
+  $('kedit').innerHTML=`<div class="row"><label for="pd">아빠</label><input type="text" id="pd" data-p="dad" value="${esc(draft.dad)}" maxlength="10"><label for="pm2">엄마</label><input type="text" id="pm2" data-p="mom" value="${esc(draft.mom)}" maxlength="10"></div>`+draft.kids.map((k,i)=>`<div class="kid"><div class="row"><label for="kn${i}">자녀${i+1}</label><input type="text" id="kn${i}" data-n="${i}" value="${esc(k.name)}" maxlength="10"></div><b>캐릭터</b><div class="chips">${Object.keys(CH).map(c=>`<button type="button" class="chip" data-kid="${i}" data-ch="${c}" aria-pressed="${chOf(k)===c}">${CH[c][0]}</button>`).join('')}</div><div class="note" style="text-align:left">누르는 순서대로 할 일 순서가 정해져요.</div>${['am','pm'].map(r=>`<b>${RT[r]}</b><div class="chips">${ORDER.map(t=>{const j=k[r].indexOf(t);return `<button type="button" class="chip" data-kid="${i}" data-r="${r}" data-t="${t}" aria-pressed="${j>=0}">${j>=0?(j+1)+'. ':''}${ICONS[t][0]}</button>`}).join('')}</div>`).join('')}</div>`).join('');
 }
 $('gear').onclick=()=>{draft=JSON.parse(JSON.stringify(cfg));editor();$('dlg').showModal()};
 $('cancel').onclick=()=>$('dlg').close();
 $('kedit').addEventListener('input',e=>{const i=e.target.dataset.n,p=e.target.dataset.p;if(i!==undefined)draft.kids[i].name=e.target.value;if(p)draft[p]=e.target.value});
 $('kedit').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.ch){draft.kids[b.dataset.kid].ch=b.dataset.ch;editor();return}
   if(!b.dataset.r)return;
   const L=draft.kids[b.dataset.kid][b.dataset.r],t=b.dataset.t,j=L.indexOf(t);
   if(j>=0)L.splice(j,1);else L.push(t);editor()});
@@ -293,7 +347,9 @@ $('nav').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(!b
 $('kg').addEventListener('click',e=>{const b=e.target.closest('.c');if(!b)return;fresh();
   const ki=+b.dataset.k,key=(RT[view]?view:'am')+ki,d=prog.done[key]=doneOf(key),t=b.dataset.t,j=d.indexOf(t);
   if(j>=0)d.splice(j,1);else{d.push(t);const r=b.getBoundingClientRect();if(!matchMedia('(prefers-reduced-motion: reduce)').matches)burst(r.left+r.width/2,r.top+r.height/2)}
-  save('md-prog2',prog);cards()});
+  save('md-prog2',prog);award(RT[view]?view:'am',ki);cards()});
+$('pop').onclick=()=>$('pop').classList.remove('on');
+$('gv').addEventListener('click',e=>{const b=e.target.closest('[data-reset]');if(!b)return;G.pts[+b.dataset.reset]=0;gsave();gauge()});
 $('fs').onclick=()=>{const el=document.documentElement;try{const p=(el.requestFullscreen||el.webkitRequestFullscreen)?.call(el);p&&p.catch&&p.catch(()=>{})}catch(e){}};
 let lock=null;
 document.addEventListener('click',()=>{if(lock||!navigator.wakeLock)return;navigator.wakeLock.request('screen').then(l=>{lock=l;l.addEventListener('release',()=>lock=null)}).catch(()=>{})});
