@@ -2,7 +2,7 @@
 // PUT /api/data {set:{키:값}} → 저장
 const { kv, configured, authed } = require('./_kv');
 
-const ALLOW = /^md-(cfg3|events|gauge|say|say-custom|prog2|photo-[01])$/;
+const ALLOW = /^md-(note|cfg3|events|gauge|say|say-custom|prog2|photo-[01])$/;
 
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');

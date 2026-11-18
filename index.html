@@ -296,6 +296,9 @@ body[data-v=pm] .home{display:flex}
 .home svg{width:64px;height:64px;flex:none}
 .home h2{margin:0;font-size:clamp(28px,3.6vw,40px);line-height:1.1}
 .home p{margin:2px 0 0;color:var(--soft)}
+.nb{flex:none;min-width:44px;height:44px;border-radius:14px;border:2px solid var(--line);background:var(--bg);display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:0 10px;font-family:Jua;font-size:17px;color:var(--ink)}
+.nb svg{width:24px;height:24px}
+textarea{font:inherit;font-size:20px;font-family:Jua;padding:10px 12px;border-radius:14px;border:2px solid var(--line);background:var(--bg);color:var(--ink);resize:none;width:100%}
 .note{font-size:13px;color:var(--soft);text-align:center}
 .burst{position:fixed;width:12px;height:12px;border-radius:3px;pointer-events:none;animation:fly .9s ease-out forwards}
 @keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(400deg);opacity:0}}
@@ -355,7 +358,9 @@ input[type=time],input[type=text],select{font:inherit;font-size:16px;min-height:
   <section class="pv" id="pv"></section>
   <section class="calv" id="calv" aria-label="달력과 일정"></section>
   <section class="gv" id="gv" aria-label="칭찬스티커"></section>
-  <section class="home route" id="home"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 30L32 8l26 22" fill="none" stroke="#ff6b4a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 28v28h40V28L32 12z" fill="#fff4d6" stroke="#c9a26a" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="38" width="12" height="18" rx="2" fill="#8a5a2b"/><circle cx="35" cy="47" r="1.6" fill="#ffd23f"/><path d="M44 18v-8h6v13" fill="#c9a26a"/></svg><div><h2>어서 와! 오늘도 수고했어</h2><p>집에 오면 하나씩 해요. 다 하면 놀 시간!</p></div></section>
+  <section class="home route" id="home"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 30L32 8l26 22" fill="none" stroke="#ff6b4a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 28v28h40V28L32 12z" fill="#fff4d6" stroke="#c9a26a" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="38" width="12" height="18" rx="2" fill="#8a5a2b"/><circle cx="35" cy="47" r="1.6" fill="#ffd23f"/><path d="M44 18v-8h6v13" fill="#c9a26a"/></svg><div style="flex:1;min-width:0"><h2 id="hmsg">어서 와! 오늘도 수고했어</h2><p id="hsub">집에 오면 하나씩 해요. 다 하면 놀 시간!</p></div>
+  <button class="nb" id="nlisten" aria-label="소리로 듣기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
+  <button class="nb" id="nedit" aria-label="엄마 아빠가 쓰기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg><span>쓰기</span></button></section>
   <section class="go route" id="go">
     <div><div class="lbl" id="golbl">유치원 출발까지</div><h2 id="goh">—</h2></div>
     <div class="road">
@@ -369,6 +374,11 @@ input[type=time],input[type=text],select{font:inherit;font-size:16px;min-height:
   <p class="note route">카드를 누르면 '다 했어!' 도장이 찍혀요. 다음 날 아침이면 저절로 처음부터 시작해요.</p>
 </main>
 
+<dialog id="noted"><form class="dlg" id="nform"><div class="dh"><h2 tabindex="-1" autofocus>엄마 아빠가 남기는 말</h2><button type="button" class="xb" id="nx" aria-label="닫기">×</button></div>
+  <textarea id="ntext" maxlength="40" rows="2" placeholder="오늘 태권도 멋지게 하고 와!"></textarea>
+  <div class="who" id="nwho"></div>
+  <div class="note" style="text-align:left">하원 화면 맨 위에 크게 보여요. 아이가 스피커 버튼을 누르면 소리로 읽어줘요.</div>
+  <div class="row"><button type="button" class="btn ghost" id="nreset">기본 문구로</button><span class="sp"></span><button class="btn">남기기</button></div></form></dialog>
 <dialog id="sayd"><div class="dlg" id="sayc"></div></dialog>
 <div class="pop" id="pop" role="status"><div id="popc"></div></div>
 <dialog id="dlg"><form class="dlg" id="form">
@@ -421,7 +431,7 @@ const chOf=k=>CH[k.ch]?k.ch:'ts';
 const PH=i=>{try{return localStorage.getItem('md-photo-'+i)}catch(e){return null}};
 const avatar=(ki,cls)=>{const p=PH(ki);return p?`<img class="${cls} ph" src="${p}" alt="" style="--k:${KC[ki%2]}">`:chSvg(cfg.kids[ki],cls)};
 const chSvg=(k,cls)=>`<svg class="${cls}" viewBox="0 0 100 100" aria-hidden="true">${CH[chOf(k)][1]}</svg>`;
-let G=null,EV=[];
+let G=null,EV=[],NOTE={};
 const L='stroke="#2b4a5e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
 const SAY=[
 ['사랑해요',`<path d="M24 42S6 31 6 18a9 9 0 0 1 18-4 9 9 0 0 1 18 4c0 13-18 24-18 24z" fill="#ff6b8a" ${L}/><path d="M13 16q1-4 5-5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`],
@@ -439,7 +449,7 @@ function speak(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.r
 let SM={};
 const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}};
 /* 동기화: 서버(/api)가 설정돼 있으면 가족 기기끼리 공유, 아니면 이 기기에만 저장 */
-const SYNC=['md-cfg3','md-events','md-gauge','md-say','md-say-custom','md-prog2','md-photo-0','md-photo-1'];
+const SYNC=['md-note','md-cfg3','md-events','md-gauge','md-say','md-say-custom','md-prog2','md-photo-0','md-photo-1'];
 let TOK=null,RV=0,ptimer=null,ready=false;const pend={};
 try{TOK=localStorage.getItem('md-token')}catch(e){}
 function syncStat(st){const el=document.getElementById('sync');if(!el)return;el.dataset.s=st;
@@ -460,7 +470,7 @@ async function pull(){if(!TOK)return;
     RV=j.v;ready=true;Object.assign(pend,up);if(Object.keys(up).length)flush();
     if(ch)reloadState();syncStat('ok')}
   catch(e){syncStat('off')}}
-function reloadState(){cfg=load('md-cfg3',cfg);applyLook(cfg);prog=load('md-prog2',prog);G=load('md-gauge',G);SM=load('md-say',SM);EV=load('md-events',EV);
+function reloadState(){NOTE=load('md-note',NOTE);if(typeof noteShow==='function')noteShow();cfg=load('md-cfg3',cfg);applyLook(cfg);prog=load('md-prog2',prog);G=load('md-gauge',G);SM=load('md-say',SM);EV=load('md-events',EV);
   try{CUS=load('md-say-custom',CUS)}catch(e){}
   calKey='';cal(new Date());if(!$('dlg').open&&!$('sayd').open)nav()}
 const save=(k,v)=>{const raw=JSON.stringify(v);try{localStorage.setItem(k,raw)}catch(e){}syncPut(k,raw)};
@@ -473,7 +483,7 @@ const MODES=[['light','항상 밝게'],['auto','기기 설정 따라'],['dark','
 function applyLook(c){const r=document.documentElement,m=c.mode||'light';if(m==='auto')delete r.dataset.theme;else r.dataset.theme=m;r.dataset.pal=c.pal||'sky'}
 applyLook(cfg);
 if((cfg.chv||0)<2){['tsb','asb'].forEach((c,i)=>{if(cfg.kids[i])cfg.kids[i].ch=c});cfg.chv=2;save('md-cfg3',cfg)}
-G=load('md-gauge',{pts:[0,0],aw:{}});EV=load('md-events',[]);SM=load('md-say',{});
+G=load('md-gauge',{pts:[0,0],aw:{}});NOTE=load('md-note',{});EV=load('md-events',[]);SM=load('md-say',{});
 const gsave=()=>save('md-gauge',G);
 const gcells=(n,lab)=>Array.from({length:10},(_,i)=>`<i class="${i<n?'on':''}">${lab?(i<n?'★':i+1):''}</i>`).join('');
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
@@ -709,6 +719,19 @@ $('pop').onclick=()=>$('pop').classList.remove('on');
 $('gv').addEventListener('click',e=>{const b=e.target.closest('[data-reset]');if(!b)return;G.pts[+b.dataset.reset]=0;gsave();gauge()});
 $('fs').onclick=()=>{const el=document.documentElement;try{const p=(el.requestFullscreen||el.webkitRequestFullscreen)?.call(el);p&&p.catch&&p.catch(()=>{})}catch(e){}};
 let lock=null;
+const NDEF=['어서 와! 오늘도 수고했어','집에 오면 하나씩 해요. 다 하면 놀 시간!'];
+function noteShow(){const has=NOTE&&NOTE.t;$('hmsg').textContent=has?NOTE.t:NDEF[0];
+  $('hsub').textContent=has?`${NOTE.who==='dad'?cfg.dad+'(아빠)':cfg.mom+'(엄마)'}가 남긴 말 · ${NOTE.at||''}`:NDEF[1]}
+let nwho='mom';
+function nwhoDraw(){$('nwho').innerHTML=[['mom',cfg.mom+' · 엄마','#e05aa0'],['dad',cfg.dad+' · 아빠','#7b6cd9']].map(([w,l,c])=>`<button type="button" data-nw="${w}" style="--c:${c}" aria-pressed="${w===nwho}">${esc(l)}</button>`).join('')}
+$('nedit').onclick=()=>{nwho=NOTE.who||'mom';$('ntext').value=NOTE.t||'';nwhoDraw();$('noted').showModal()};
+$('nwho').addEventListener('click',e=>{const b=e.target.closest('[data-nw]');if(!b)return;nwho=b.dataset.nw;nwhoDraw()});
+$('nx').onclick=()=>$('noted').close();
+$('nreset').onclick=()=>{NOTE={};save('md-note',NOTE);noteShow();$('noted').close()};
+$('nform').addEventListener('submit',e=>{e.preventDefault();const t=$('ntext').value.trim();const n=new Date();
+  NOTE=t?{t,who:nwho,at:fmt(n.getHours()*60+n.getMinutes())}:{};save('md-note',NOTE);noteShow();$('noted').close()});
+$('nlisten').onclick=()=>speak($('hmsg').textContent);
+noteShow();
 ['gesturestart','gesturechange'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
 $('stars').innerHTML=Array.from({length:26},(_,i)=>{const r=n=>((Math.sin(i*97.3+n)*43758.5453)%1+1)%1;return `<i style="left:${(r(1)*98).toFixed(1)}%;top:${(r(2)*88).toFixed(1)}%;--s:${(6+r(3)*9).toFixed(0)}px;--d:${(2+r(4)*3).toFixed(1)}s;--dl:-${(r(5)*4).toFixed(1)}s"></i>`}).join('');
 const nightOn=()=>{const h=new Date().getHours(),n=h>=19||h<6;document.documentElement.classList.toggle('night',n);$('pp').textContent=n?'쿨쿨… 잘 자!':'삐약!'};nightOn();
