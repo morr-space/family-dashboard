@@ -131,8 +131,9 @@ main{padding:22px max(2.5vw,12px) 24px;display:grid;gap:18px}
 .kc{background:light-dark(color-mix(in srgb,var(--k) 12%,#fff),color-mix(in srgb,var(--k) 18%,#13202b));border:3px solid var(--k);border-radius:26px;padding:12px 12px 14px;display:grid;gap:10px;align-content:start}
 .kh{display:flex;align-items:center;gap:10px}
 .kh .av{width:58px;height:58px;flex:none}
-img.ph{border-radius:50%;object-fit:cover;border:3px solid var(--k);background:#fff;display:block}
-.gc img.big{width:150px;height:150px;border-width:5px}
+img.ph{border-radius:22%;object-fit:cover;display:block;background:transparent}
+img.ph.cut{border-radius:0;object-fit:contain}
+.gc img.big{width:150px;height:150px}
 .pop img{width:150px;height:150px;margin:0 auto}
 .phrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .phrow img{width:52px;height:52px}
@@ -429,7 +430,7 @@ bear:['아기 곰',`<ellipse cx="50" cy="94" rx="30" ry="4" fill="#0002"/><circl
 chick:['병아리',`<ellipse cx="50" cy="94" rx="28" ry="4" fill="#0002"/><path d="M44 22q4-12 12-8q-8 2-6 10" fill="#ffc400" ${O}/><circle cx="50" cy="58" r="34" fill="#ffd93b" ${O}/><path d="M16 60q-10 8 2 16" fill="#ffc400" ${O}/><path d="M84 60q10 8-2 16" fill="#ffc400" ${O}/>`+FACE(52,'<path d="M44 62l6 8 6-8z" fill="#f08a24" stroke="#2b4a5e" stroke-width="2" stroke-linejoin="round"/>')]};
 const chOf=k=>CH[k.ch]?k.ch:'ts';
 const PH=i=>{try{return localStorage.getItem('md-photo-'+i)}catch(e){return null}};
-const avatar=(ki,cls)=>{const p=PH(ki);return p?`<img class="${cls} ph" src="${p}" alt="" style="--k:${KC[ki%2]}">`:chSvg(cfg.kids[ki],cls)};
+const avatar=(ki,cls)=>{const p=PH(ki);return p?`<img class="${cls} ph${p.startsWith('data:image/png')?' cut':''}" src="${p}" alt="">`:chSvg(cfg.kids[ki],cls)};
 const chSvg=(k,cls)=>`<svg class="${cls}" viewBox="0 0 100 100" aria-hidden="true">${CH[chOf(k)][1]}</svg>`;
 let G=null,EV=[],NOTE={};
 const L='stroke="#2b4a5e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
@@ -653,16 +654,32 @@ $('gear').onclick=()=>{draft=JSON.parse(JSON.stringify(cfg));editor();$('dlg').s
 $('cancel').onclick=()=>$('dlg').close();
 $('dlgx').onclick=()=>$('dlg').close();
 $('dlg').addEventListener('close',()=>applyLook(cfg));
+/* 흰 배경 지우기: 가장자리와 이어진 흰색만 투명하게 (캐릭터 안의 흰 눈 등은 남김) */
+function cutout(img){
+  const M=480,k=Math.min(1,M/Math.max(img.width,img.height)),W=Math.max(1,Math.round(img.width*k)),H=Math.max(1,Math.round(img.height*k));
+  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,W,H);
+  const d=x.getImageData(0,0,W,H),p=d.data,N=W*H,gone=new Uint8Array(N),st=new Int32Array(N);let sp=0,cnt=0;
+  const bg=i=>{const r=p[i*4],g=p[i*4+1],b=p[i*4+2],a=p[i*4+3];if(a<20)return true;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);return mn>222&&mx-mn<28};
+  const push=i=>{if(!gone[i]&&bg(i)){gone[i]=1;st[sp++]=i}};
+  for(let X=0;X<W;X++){push(X);push((H-1)*W+X)}for(let Y=0;Y<H;Y++){push(Y*W);push(Y*W+W-1)}
+  while(sp){const i=st[--sp];cnt++;p[i*4+3]=0;const X=i%W,Y=(i/W)|0;if(X>0)push(i-1);if(X<W-1)push(i+1);if(Y>0)push(i-W);if(Y<H-1)push(i+W)}
+  const S=320,o=document.createElement('canvas');o.width=o.height=S;const ox=o.getContext('2d');
+  if(cnt/N<0.08){const m=Math.min(img.width,img.height);ox.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S,S);return o.toDataURL('image/jpeg',.85)}
+  for(let i=0;i<N;i++){if(gone[i])continue;const X=i%W,Y=(i/W)|0;
+    if((X>0&&gone[i-1])||(X<W-1&&gone[i+1])||(Y>0&&gone[i-W])||(Y<H-1&&gone[i+W])){const mn=Math.min(p[i*4],p[i*4+1],p[i*4+2]);if(mn>170)p[i*4+3]=Math.min(p[i*4+3],Math.round((255-mn)/85*255))}}
+  x.putImageData(d,0,0);
+  let x0=W,y0=H,x1=-1,y1=-1;for(let Y=0;Y<H;Y++)for(let X=0;X<W;X++)if(p[(Y*W+X)*4+3]>16){if(X<x0)x0=X;if(X>x1)x1=X;if(Y<y0)y0=Y;if(Y>y1)y1=Y}
+  if(x1<0){x0=0;y0=0;x1=W-1;y1=H-1}
+  const bw=x1-x0+1,bh=y1-y0+1,sc=(S*0.94)/Math.max(bw,bh),dw=bw*sc,dh=bh*sc;
+  ox.drawImage(c,x0,y0,bw,bh,(S-dw)/2,(S-dh)/2,dw,dh);return o.toDataURL('image/png')}
 $('kedit').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0],i=e.target.dataset.photo;if(!f||i===undefined)return;
   const url=URL.createObjectURL(f),img=new Image();
-  img.onload=()=>{const S=240,c=document.createElement('canvas');c.width=c.height=S;const m=Math.min(img.width,img.height);
-    c.getContext('2d').drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S,S);URL.revokeObjectURL(url);
-    const du=c.toDataURL('image/jpeg',.85);try{localStorage.setItem('md-photo-'+i,du)}catch(err){}syncPut('md-photo-'+i,du);
-    editor();cards()};
+  img.onload=()=>{URL.revokeObjectURL(url);const du=cutout(img);try{localStorage.setItem('md-photo-'+i,du)}catch(err){}syncPut('md-photo-'+i,du);
+    editor();nav()};
   img.src=url});
 $('kedit').addEventListener('input',e=>{const i=e.target.dataset.n,p=e.target.dataset.p;if(i!==undefined)draft.kids[i].name=e.target.value;if(p)draft[p]=e.target.value});
 $('kedit').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.phdel!==undefined){try{localStorage.setItem('md-photo-'+b.dataset.phdel,'')}catch(e){}syncPut('md-photo-'+b.dataset.phdel,'');editor();cards();return}
+  if(b.dataset.phdel!==undefined){try{localStorage.setItem('md-photo-'+b.dataset.phdel,'')}catch(e){}syncPut('md-photo-'+b.dataset.phdel,'');editor();nav();return}
   if(b.dataset.mode){draft.mode=b.dataset.mode;applyLook(draft);editor();return}
   if(b.dataset.pal){draft.pal=b.dataset.pal;applyLook(draft);editor();return}
   if(b.dataset.ch){draft.kids[b.dataset.kid].ch=b.dataset.ch;editor();return}
