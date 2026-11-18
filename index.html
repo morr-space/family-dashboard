@@ -288,7 +288,7 @@ function nav(){
   else $('pv').innerHTML=`<h2>${esc(view==='dad'?cfg.dad:cfg.mom)}</h2><p>${view==='dad'?'아빠':'엄마'} 페이지예요. 일정이나 할 일을 여기에 넣을 수 있어요.</p>`;
 }
 function cards(){
-  fresh();const r=RT[view]?view:'am';
+  fresh();if(typeof sayClean==='function')sayClean();const r=RT[view]?view:'am';
   $('kg').innerHTML=cfg.kids.map((k,ki)=>{const T=k[r],d=doneOf(r+ki),next=T.findIndex(t=>!d.includes(t)),n=T.filter(t=>d.includes(t)).length;
     return `<div class="kc" style="--k:${KC[ki%2]}"><div class="kh">${chSvg(k,'av')}<h2>${esc(k.name)}</h2><div class="hp" aria-label="칭찬스티커 ${G.pts[ki]} / 10"><div class="gauge">${gcells(G.pts[ki])}</div><b>${G.pts[ki]}/10</b></div><span class="cnt">${n} / ${T.length}</span></div>
     <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<button class="bub" data-again="${ki}" aria-label="다시 듣기: ${esc(SM[ki].t)}">${sayIco(SM[ki].t)}<b>${esc(SM[ki].t)}</b><small>${esc(SM[ki].at)}</small></button>`:'<div class="bub empty">버튼을 눌러 하고 싶은 말을 골라요</div>'}</div>
@@ -323,6 +323,7 @@ function cal(n){const y=n.getFullYear(),m=n.getMonth(),k=y+'-'+m+'-'+n.getDate()
 function tick(){
   const n=new Date(),h=n.getHours(),m=n.getMinutes();
   cal(n);
+  if(typeof sayClean==='function'&&sayClean()&&RT[view])cards();
   $('date').textContent=`${n.getMonth()+1}월 ${n.getDate()}일 ${DAYS[n.getDay()]}요일`;
   $('ampm').textContent=h<12?'오전':'오후';$('time').textContent=((h%12)||12)+':'+String(m).padStart(2,'0');
   const now=h*60+m+n.getSeconds()/60,st=mins(cfg.start),dp=mins(cfg.dep),wk=n.getDay()%6===0;
@@ -413,6 +414,10 @@ $('kg').addEventListener('click',e=>{const sb=e.target.closest('[data-say]');if(
 let CUS=load('md-say-custom',[]);
 const BUBI=`<path d="M8 10h32a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H22l-9 8v-8H8a4 4 0 0 1-4-4V14a4 4 0 0 1 4-4z" fill="#fff4d6" ${L}/><circle cx="16" cy="22" r="2.4" fill="#2b4a5e"/><circle cx="24" cy="22" r="2.4" fill="#2b4a5e"/><circle cx="32" cy="22" r="2.4" fill="#2b4a5e"/>`;
 let sayKi=0;
+const SAY_RESET=15;
+function sayClean(){const n=new Date(),b=new Date(n.getFullYear(),n.getMonth(),n.getDate(),n.getHours()>=SAY_RESET?SAY_RESET:0).getTime();
+  let ch=false;for(const k in SM)if(!SM[k].ts||SM[k].ts<b){delete SM[k];ch=true}
+  if(ch)save('md-say',SM);return ch}
 function sayOpen(ki){sayKi=ki;const k=cfg.kids[ki],on=t=>SM[ki]&&SM[ki].t===t;
   const btn=t=>`<button type="button" data-st="${esc(t)}" aria-pressed="${!!on(t)}">${sayIco(t)}${esc(t)}</button>`;
   $('sayc').style.setProperty('--k',KC[ki%2]);
@@ -427,7 +432,7 @@ function sayOpen(ki){sayKi=ki;const k=cfg.kids[ki],on=t=>SM[ki]&&SM[ki].t===t;
 }
 $('sayc').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.closest('form'))return;
   if(b.dataset.sdel!==undefined){CUS.splice(+b.dataset.sdel,1);save('md-say-custom',CUS);sayOpen(sayKi);return}
-  if(b.dataset.st){const n=new Date();SM[sayKi]={t:b.dataset.st,at:fmt(n.getHours()*60+n.getMinutes())};speak(b.dataset.st)}
+  if(b.dataset.st){const n=new Date();SM[sayKi]={t:b.dataset.st,at:fmt(n.getHours()*60+n.getMinutes()),ts:n.getTime()};speak(b.dataset.st)}
   else if(b.dataset.sclr!==undefined)delete SM[sayKi];
   save('md-say',SM);$('sayd').close();cards()});
 $('pop').onclick=()=>$('pop').classList.remove('on');
