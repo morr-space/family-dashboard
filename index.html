@@ -177,7 +177,7 @@ body[data-v=gauge] .gv{display:grid}
 .pop div{background:var(--card);border-radius:30px;padding:26px 40px;text-align:center;box-shadow:0 10px 0 #0002;animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
 .pop svg{width:150px;height:150px}.pop svg.gem-pop{width:64px;height:64px}.pop h2{margin:6px 0 0;font-size:40px}.pop p{margin:4px 0 0;font-size:20px}
 @keyframes pop{from{transform:scale(.4);opacity:0}}
-.kh h2{margin:0;font-size:30px;line-height:1}
+.kh h2{margin:0;font-size:30px;line-height:1;white-space:nowrap}
 .kh .cnt{margin-left:auto;font-family:Jua;font-size:20px;background:var(--card);border-radius:999px;padding:4px 14px}
 .kc .all{display:none;text-align:center;font-family:Jua;font-size:24px;color:var(--ok);background:var(--card);border-radius:16px;padding:6px}
 .kc .all.on{display:block}
@@ -259,6 +259,15 @@ html.fs .top{padding-top:62px}
 @media(display-mode:standalone){#fs{display:none}}
 html.fs body[data-v=cal] .calv{height:calc(100dvh - 166px)}
 @media(min-width:901px){html.fs body[data-v=home] .hv{min-height:calc(100dvh - 360px)}}
+.stb{min-height:40px;padding:4px 12px;border-radius:12px;border:2px solid var(--k);background:var(--card);color:var(--ink);font-family:Jua;font-size:16px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.stb svg{width:18px;height:18px}
+.stg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stg button{min-height:72px;border-radius:18px;border:3px solid var(--line);background:var(--bg);font-family:Jua;font-size:21px;color:var(--ink)}
+.stg button:active{border-color:var(--k)}
+.slog{list-style:none;margin:0;padding:0;display:grid;gap:4px;width:100%;text-align:left}
+.slog li{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:10px;padding:4px 6px 4px 10px;font-size:15px}
+.slog li span{flex:1}.slog li small{color:var(--soft)}
+.slog li button{border:0;background:transparent;font-size:20px;color:var(--soft);min-width:36px;min-height:36px}
 .demob{min-height:40px;padding:4px 14px;border-radius:999px;border:0;background:#ffc928;color:#3a2a00;font-family:Jua;font-size:16px}
 .sync{width:14px;height:14px;border-radius:50%;background:#9aa5ad;border:2px solid #fff;flex:none}
 .sync[data-s=ok]{background:#2fa84f}.sync[data-s=off]{background:#f2994a}
@@ -383,6 +392,7 @@ input[type=time],input[type=text],select{font:inherit;font-size:16px;min-height:
   <div class="who" id="nwho"></div>
   <div class="note" style="text-align:left">하원 화면 맨 위에 크게 보여요. 아이가 스피커 버튼을 누르면 소리로 읽어줘요.</div>
   <div class="row"><button type="button" class="btn ghost" id="nreset">기본 문구로</button><span class="sp"></span><button class="btn">남기기</button></div></form></dialog>
+<dialog id="studyd"><div class="dlg" id="studyc"></div></dialog>
 <dialog id="sayd"><div class="dlg" id="sayc"></div></dialog>
 <div class="pop" id="pop" role="status"><div id="popc"></div></div>
 <dialog id="dlg"><form class="dlg" id="form">
@@ -527,7 +537,7 @@ function cards(){
   fresh();if(typeof sayClean==='function')sayClean();const r=RT[view]?view:'am';
   $('kg').innerHTML=cfg.kids.map((k,ki)=>{const T=k[r],d=doneOf(r+ki),next=T.findIndex(t=>!d.includes(t)),n=T.filter(t=>d.includes(t)).length;
     return `<div class="kc" style="--k:${KC[ki%2]}"><div class="kh">${avatar(ki,'av')}<h2>${esc(k.name)}</h2><div class="hp" aria-label="칭찬스티커 ${G.pts[ki]} / 10"><div class="gauge">${gcells(G.pts[ki])}</div><b>${G.pts[ki]}/10</b></div><span class="cnt">${n} / ${T.length}</span></div>
-    <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<button class="bub" data-again="${ki}" aria-label="다시 듣기: ${esc(SM[ki].t)}">${sayIco(SM[ki].t)}<b>${esc(SM[ki].t)}</b><small>${esc(SM[ki].at)}</small></button>`:'<div class="bub empty">버튼을 눌러 하고 싶은 말을 골라요</div>'}</div>
+    <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<button class="bub" data-again="${ki}" aria-label="다시 듣기: ${esc(SM[ki].t)}">${sayIco(SM[ki].t)}<b>${esc(SM[ki].t)}</b><small>${esc(SM[ki].at)}</small></button>`:'<div class="bub empty">버튼을 눌러 하고 싶은 말을 골라요</div>'}<button class="stb" data-study="${ki}" style="min-height:46px">${gem(2,true)}공부했어요</button></div>
     <div class="cards">${T.map((t,i)=>`<button class="c${d.includes(t)?' done':''}" data-k="${ki}" data-t="${t}" aria-pressed="${d.includes(t)}" aria-label="${esc(k.name)} ${ICONS[t][0]}"><span class="n">${i+1}</span><svg class="pic" viewBox="0 0 120 120" aria-hidden="true">${ICONS[t][1]}</svg><span class="nm">${ICONS[t][0]}</span><span class="stamp"><span>클리어!</span></span></button>`).join('')}</div>
     <div class="all${T.length&&next===-1?' on':''}">${esc(k.name)} ${r==='am'?'준비 끝! 최고야':'다 했다! 이제 놀자'}</div></div>`}).join('');
 }
@@ -563,6 +573,7 @@ function homePage(){fresh();const n=new Date(),td=ymd(n),t0=new Date(n.getFullYe
     return `<div class="hc hk" style="--k:${KC[ki%2]}" data-go="${ki}">${avatar(ki,'av2')}<h2>${esc(k.name)}</h2>
     <div class="rp">${row('am','등원')}${row('pm','하원')}</div>
     <div class="hp" aria-label="칭찬스티커 ${G.pts[ki]} / 10"><div class="gauge">${gcells(G.pts[ki])}</div><b>${G.pts[ki]}/10</b></div>
+    <button class="stb" data-study="${ki}">${gem(2,true)}공부했어요 · 보석 받기</button>
     <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<button class="bub" data-again="${ki}">${sayIco(SM[ki].t)}<b>${esc(SM[ki].t)}</b></button>`:'<div class="bub empty">말을 골라요</div>'}</div></div>`};
   $('hv').innerHTML=`<div class="hc"><h3>오늘 가족 일정 <small>${dlabel(td)}</small></h3>${ev}<h3 style="margin-top:6px">다가오는 일정 <small>7일 이내</small></h3>${dd}</div>${cfg.kids.map(kid).join('')}`;
 }
@@ -574,12 +585,32 @@ function gauge(){
   $('gv').innerHTML=cfg.kids.map((k,ki)=>{const n=G.pts[ki],f=n>=10;
     return `<div class="gc${f?' full':''}" style="--k:${KC[ki%2]}">${avatar(ki,'big')}<h2>${esc(k.name)}</h2><div class="gauge">${gcells(n,1)}</div>
     <div class="num">${f?'보석 10개를 다 모았어! 정말 대단해':`${n} <small>/ 10</small>`}</div>
-    <div class="note">${f?'약속한 선물을 받을 시간이에요':`루틴을 끝까지 하면 보석이 하나씩 빛나요. ${10-n}개 남았어요`}</div>
-    ${f?`<button class="btn" data-reset="${ki}">다시 0부터 시작</button>`:''}</div>`}).join('');
+    <div class="note">${f?'약속한 선물을 받을 시간이에요':`루틴을 끝내거나 공부를 하면 보석이 하나씩 빛나요. ${10-n}개 남았어요`}</div>
+    ${f?`<button class="btn" data-reset="${ki}">다시 0부터 시작</button>`:`<button class="stb" data-study="${ki}">${gem(2,true)}공부했어요 · 보석 받기</button>`}
+    ${(()=>{const L=(G.log||[]).filter(x=>x.ki===ki&&x.day===today());return L.length?`<ul class="slog">${L.map(x=>`<li><span>${esc(x.t)}</span><small>${esc(x.at)}</small><button data-sdel2="${x.id}" aria-label="${esc(x.t)} 취소">×</button></li>`).join('')}</ul>`:'<div class="note">오늘 공부로 받은 보석이 여기에 나와요</div>'})()}</div>`}).join('');
 }
-function pop(ki,n){const k=cfg.kids[ki];
-  $('popc').innerHTML=`${avatar(ki,'')}<span style="display:block;width:64px;margin:4px auto 0">${gem(n-1,true,'gem-pop')}</span><h2>${n>=10?'보석 10개 다 모았다!':'반짝 보석 +1'}</h2><p>${esc(k.name)} ${n} / 10${n>=10?' — 최고야!':''}</p>`;
+function pop(ki,n,lab){const k=cfg.kids[ki];
+  $('popc').innerHTML=`${avatar(ki,'')}<span style="display:block;width:64px;margin:4px auto 0">${gem(n-1,true,'gem-pop')}</span><h2>${n>=10?'보석 10개 다 모았다!':(lab||'반짝 보석 +1')}</h2><p>${esc(k.name)} ${n} / 10${n>=10?' — 최고야!':''}</p>`;
   $('pop').classList.add('on');clearTimeout(pop.t);pop.t=setTimeout(()=>$('pop').classList.remove('on'),n>=10?4500:2500)}
+const STUDY=['학습지','책 읽기','영어','수학','한글','그림·만들기'];
+let stKi=0;
+function studyOpen(ki){stKi=ki;const k=cfg.kids[ki],full=G.pts[ki]>=10;
+  $('studyc').style.setProperty('--k',KC[ki%2]);
+  $('studyc').innerHTML=`<div class="dh"><h2 tabindex="-1" autofocus>${esc(k.name)} · 무슨 공부 했어요?</h2><button type="button" class="xb" data-stx="1" aria-label="닫기">×</button></div>
+  ${full?'<p class="note" style="text-align:left;margin:0">보석 10개가 꽉 찼어요! 칭찬스티커 화면에서 \'다시 0부터 시작\'을 누르면 또 모을 수 있어요.</p>':''}
+  <div class="stg">${STUDY.map(t=>`<button type="button" data-st2="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+  <form class="row" id="stform"><input type="text" id="stnew" maxlength="12" placeholder="다른 공부 (예: 피아노)" autocomplete="off" style="flex:1"><button class="btn">보석 받기</button></form>`;
+  if(!$('studyd').open)$('studyd').showModal();
+  $('stform').onsubmit=e=>{e.preventDefault();const t=$('stnew').value.trim();if(t)studyAdd(t)};
+}
+function studyAdd(t){const ki=stKi;if(G.pts[ki]>=10){studyOpen(ki);return}
+  const n=new Date();G.log=(G.log||[]).filter(x=>Date.now()-x.ts<30*864e5);
+  G.log.push({id:n.getTime().toString(36),ki,t,day:today(),at:fmt(n.getHours()*60+n.getMinutes()),ts:n.getTime()});
+  G.pts[ki]++;gsave();$('studyd').close();nav();pop(ki,G.pts[ki],t+' 공부 보석 +1');speak(t+' 공부 최고야!')}
+$('studyc').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.closest('form'))return;
+  if(b.dataset.stx){$('studyd').close();return}
+  if(b.dataset.st2)studyAdd(b.dataset.st2)});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-study]');if(b){e.stopPropagation();studyOpen(+b.dataset.study)}},true);
 function award(r,ki){
   const T=cfg.kids[ki][r],d=doneOf(r+ki),ok=T.length>0&&T.every(t=>d.includes(t)),key=prog.day+r+ki;
   for(const x in G.aw)if(!x.startsWith(prog.day))delete G.aw[x];
@@ -750,7 +781,8 @@ $('calv').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)
   if(b.dataset.who){nw=b.dataset.who;$('calv').querySelectorAll('.who button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.who===nw));return}
   if(b.dataset.edel){EV=EV.filter(x=>x.id!==b.dataset.edel);save('md-events',EV);calKey='';cal(new Date());calPage()}});
 $('pop').onclick=()=>$('pop').classList.remove('on');
-$('gv').addEventListener('click',e=>{const b=e.target.closest('[data-reset]');if(!b)return;G.pts[+b.dataset.reset]=0;gsave();gauge()});
+$('gv').addEventListener('click',e=>{const d=e.target.closest('[data-sdel2]');if(d){const x=(G.log||[]).find(y=>y.id===d.dataset.sdel2);if(x){G.log=G.log.filter(y=>y!==x);G.pts[x.ki]=Math.max(0,G.pts[x.ki]-1);gsave();gauge()}return}
+  const b=e.target.closest('[data-reset]');if(!b)return;G.pts[+b.dataset.reset]=0;gsave();gauge()});
 $('fs').onclick=()=>{const el=document.documentElement;try{const p=(el.requestFullscreen||el.webkitRequestFullscreen)?.call(el);p&&p.catch&&p.catch(()=>{})}catch(e){}};
 let lock=null;
 const NDEF=['어서 와! 오늘도 수고했어','집에 오면 하나씩 해요. 다 하면 놀 시간!'];
