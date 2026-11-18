@@ -74,6 +74,12 @@ main{padding:22px max(2.5vw,12px) 24px;display:grid;gap:18px}
 .kc{background:light-dark(color-mix(in srgb,var(--k) 12%,#fff),color-mix(in srgb,var(--k) 18%,#13202b));border:3px solid var(--k);border-radius:26px;padding:12px 12px 14px;display:grid;gap:10px;align-content:start}
 .kh{display:flex;align-items:center;gap:10px}
 .kh .av{width:58px;height:58px;flex:none}
+img.ph{border-radius:50%;object-fit:cover;border:3px solid var(--k);background:#fff;display:block}
+.gc img.big{width:150px;height:150px;border-width:5px}
+.pop img{width:150px;height:150px;margin:0 auto}
+.phrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.phrow img{width:52px;height:52px}
+.phrow label.btn{display:inline-flex;align-items:center;cursor:pointer}
 .gauge{flex:1;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px}
 .gauge i{background:light-dark(#fff,#24323e);border:2px solid color-mix(in srgb,var(--k) 45%,transparent)}
 .gauge i.on{background:var(--k);border-color:var(--k)}
@@ -237,12 +243,19 @@ const DEF={start:'07:50',dep:'08:50',dad:'현섭',mom:'달님',kids:[{name:'태�
 const KC=['#3d9be9','#ff8a5b'];
 const O='stroke="#2b4a5e" stroke-width="3" stroke-linejoin="round"';
 const FACE=(y,c)=>`<circle cx="38" cy="${y}" r="4" fill="#2b2b2b"/><circle cx="62" cy="${y}" r="4" fill="#2b2b2b"/><circle cx="39.5" cy="${y-1.5}" r="1.3" fill="#fff"/><circle cx="63.5" cy="${y-1.5}" r="1.3" fill="#fff"/><ellipse cx="29" cy="${y+9}" rx="5" ry="3.5" fill="#ff8fa3" opacity=".7"/><ellipse cx="71" cy="${y+9}" rx="5" ry="3.5" fill="#ff8fa3" opacity=".7"/>${c}`;
+const SK='#ffdcc2',HR='#22212a';
 const CH={
+tsb:['태성 블록',`<ellipse cx="50" cy="97" rx="24" ry="3" fill="#0002"/><rect x="38" y="84" width="11" height="12" rx="2" fill="#5b6f8f" ${O}/><rect x="51" y="84" width="11" height="12" rx="2" fill="#5b6f8f" ${O}/><rect x="19" y="60" width="11" height="23" rx="3" fill="#b9cde6" ${O}/><rect x="70" y="60" width="11" height="23" rx="3" fill="#b9cde6" ${O}/><rect x="19" y="81" width="11" height="7" rx="2" fill="${SK}" ${O}/><rect x="70" y="81" width="11" height="7" rx="2" fill="${SK}" ${O}/><rect x="30" y="57" width="40" height="30" rx="3" fill="#b9cde6" ${O}/><path d="M42 57h16l-3 5h-10z" fill="#8eaacd"/><rect x="30" y="13" width="40" height="45" rx="10" fill="${SK}" ${O}/><path d="M28 32V22Q28 9 40 9H60Q72 9 72 22V32L67 27L62 32L56 26L52 32L46 26L44 32L38 26L33 32z" fill="${HR}" ${O}/><rect x="38" y="38" width="5" height="6" rx="1.5" fill="#2b2b2b"/><rect x="57" y="38" width="5" height="6" rx="1.5" fill="#2b2b2b"/><rect x="38.8" y="38.8" width="1.6" height="1.6" fill="#fff"/><rect x="57.8" y="38.8" width="1.6" height="1.6" fill="#fff"/><rect x="33" y="46" width="6" height="3" rx="1.5" fill="#ff9aa8" opacity=".6"/><rect x="61" y="46" width="6" height="3" rx="1.5" fill="#ff9aa8" opacity=".6"/><path d="M44 49q6 4 12 0" fill="none" stroke="#2b2b2b" stroke-width="2.4" stroke-linecap="round"/>`],
+asb:['아성 블록',`<ellipse cx="50" cy="97" rx="24" ry="3" fill="#0002"/><rect x="38" y="84" width="11" height="12" rx="2" fill="#5b6f8f" ${O}/><rect x="51" y="84" width="11" height="12" rx="2" fill="#5b6f8f" ${O}/><rect x="19" y="60" width="11" height="23" rx="3" fill="#4c4a4f" ${O}/><rect x="70" y="60" width="11" height="23" rx="3" fill="#4c4a4f" ${O}/><rect x="19" y="81" width="11" height="7" rx="2" fill="${SK}" ${O}/><rect x="70" y="81" width="11" height="7" rx="2" fill="${SK}" ${O}/><rect x="30" y="57" width="40" height="30" rx="3" fill="#4c4a4f" ${O}/><path d="M42 57h16l-3 5h-10z" fill="#2f2d31"/><path d="M40 66h20M42 72h16" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/><rect x="27" y="13" width="46" height="45" rx="10" fill="${SK}" ${O}/><path d="M25 32V22Q25 9 37 9H63Q75 9 75 22V32L70 27L65 32L59 26L52 32L46 26L41 32L35 26L30 32z" fill="${HR}" ${O}/><path d="M35 42q4-5 8 0M57 42q4-5 8 0" fill="none" stroke="#2b2b2b" stroke-width="2.8" stroke-linecap="round"/><rect x="30" y="46" width="7" height="3.4" rx="1.7" fill="#ff9aa8" opacity=".6"/><rect x="63" y="46" width="7" height="3.4" rx="1.7" fill="#ff9aa8" opacity=".6"/><path d="M40 45h20v2q0 7-10 7t-10-7z" fill="#fff" stroke="#2b2b2b" stroke-width="2.2" stroke-linejoin="round"/><path d="M41 48h18" stroke="#c9c9c9" stroke-width="1.2"/>`],
+ts:['태성 캐릭터',`<ellipse cx="50" cy="97" rx="30" ry="3" fill="#0002"/><path d="M18 100q2-19 32-19t32 19z" fill="#b9cde6" ${O}/><path d="M38 84q12 7 24 0" fill="none" stroke="#8eaacd" stroke-width="3"/><circle cx="24" cy="57" r="6" fill="${SK}" ${O}/><circle cx="76" cy="57" r="6" fill="${SK}" ${O}/><ellipse cx="50" cy="55" rx="26" ry="29" fill="${SK}" ${O}/><path d="M22 54Q18 20 50 18Q82 20 78 54L75 46L71 40L66 44L61 38L56 43L50 37L44 43L39 38L34 44L29 40L25 46z" fill="${HR}" ${O}/><path d="M40 22q8-4 16 0" fill="none" stroke="#4a4858" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="39" cy="58" rx="3" ry="3.6" fill="#2b2b2b"/><ellipse cx="61" cy="58" rx="3" ry="3.6" fill="#2b2b2b"/><circle cx="40" cy="56.6" r="1.1" fill="#fff"/><circle cx="62" cy="56.6" r="1.1" fill="#fff"/><path d="M34 52q5-2 9 0M57 52q5-2 9 0" fill="none" stroke="${HR}" stroke-width="2" stroke-linecap="round"/><ellipse cx="31" cy="67" rx="5" ry="3.2" fill="#ff9aa8" opacity=".55"/><ellipse cx="69" cy="67" rx="5" ry="3.2" fill="#ff9aa8" opacity=".55"/><path d="M50 61v4" stroke="#e0a98a" stroke-width="2.5" stroke-linecap="round"/><path d="M43 71q7 5 14 0" fill="#fff" stroke="#2b2b2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`],
+as:['아성 캐릭터',`<ellipse cx="50" cy="97" rx="31" ry="3" fill="#0002"/><path d="M17 100q2-19 33-19t33 19z" fill="#4c4a4f" ${O}/><path d="M38 84q12 7 24 0" fill="none" stroke="#2f2d31" stroke-width="3"/><circle cx="21" cy="58" r="6.5" fill="${SK}" ${O}/><circle cx="79" cy="58" r="6.5" fill="${SK}" ${O}/><ellipse cx="50" cy="56" rx="29" ry="28" fill="${SK}" ${O}/><path d="M19 55Q14 14 50 13Q86 14 81 55L78 46L73 41L69 45L63 38L58 44L52 37L46 44L40 38L35 45L30 41L24 47z" fill="${HR}" ${O}/><path d="M38 19q10-5 22 0" fill="none" stroke="#4a4858" stroke-width="2.5" stroke-linecap="round"/><path d="M34 58q5-6 10 0M56 58q5-6 10 0" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/><ellipse cx="29" cy="66" rx="5.5" ry="3.4" fill="#ff9aa8" opacity=".6"/><ellipse cx="71" cy="66" rx="5.5" ry="3.4" fill="#ff9aa8" opacity=".6"/><path d="M50 60v4" stroke="#e0a98a" stroke-width="2.5" stroke-linecap="round"/><path d="M37 67q13 14 26 0z" fill="#fff" stroke="#2b2b2b" stroke-width="2.4" stroke-linejoin="round"/><path d="M41 69.5h18M44 67.5v3.2M50 67.5v3.6M56 67.5v3.2" stroke="#c9c9c9" stroke-width="1.3"/>`],
 whale:['아기 고래',`<ellipse cx="50" cy="93" rx="32" ry="4" fill="#0002"/><path d="M50 26v-12M50 26q-2-10-10-13M50 26q2-10 10-13" stroke="#8fd0f5" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M84 58q8-16 14-10q2 8-10 16z" fill="#4aa3e6" ${O}/><path d="M10 62q0-34 40-34q36 0 36 32q0 28-38 28T10 62z" fill="#5ab3f0" ${O}/><path d="M18 70q30 14 62 0q-6 16-32 16T18 70z" fill="#d7f0ff"/>`+FACE(54,'<path d="M45 62q5 5 10 0" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>')],
 fox:['아기 여우',`<ellipse cx="50" cy="94" rx="30" ry="4" fill="#0002"/><path d="M22 44L16 10l28 20z" fill="#ff8a5b" ${O}/><path d="M78 44l6-34-28 20z" fill="#ff8a5b" ${O}/><path d="M24 36l-3-16 12 10z" fill="#ffd8c4"/><path d="M76 36l3-16-12 10z" fill="#ffd8c4"/><path d="M50 90Q12 90 12 58Q12 26 50 26T88 58Q88 90 50 90z" fill="#ff8a5b" ${O}/><path d="M14 62q20 2 36 26q16-24 36-26q-6 26-36 26T14 62z" fill="#fff"/>`+FACE(54,'<ellipse cx="50" cy="66" rx="5" ry="3.5" fill="#2b2b2b"/>')],
 bear:['아기 곰',`<ellipse cx="50" cy="94" rx="30" ry="4" fill="#0002"/><circle cx="24" cy="28" r="12" fill="#c98a4b" ${O}/><circle cx="76" cy="28" r="12" fill="#c98a4b" ${O}/><circle cx="24" cy="28" r="5" fill="#f4dcc0"/><circle cx="76" cy="28" r="5" fill="#f4dcc0"/><circle cx="50" cy="58" r="34" fill="#c98a4b" ${O}/><ellipse cx="50" cy="68" rx="15" ry="11" fill="#f4dcc0"/>`+FACE(52,'<ellipse cx="50" cy="63" rx="5" ry="3.5" fill="#2b2b2b"/><path d="M45 70q5 4 10 0" fill="none" stroke="#2b2b2b" stroke-width="2.5" stroke-linecap="round"/>')],
 chick:['병아리',`<ellipse cx="50" cy="94" rx="28" ry="4" fill="#0002"/><path d="M44 22q4-12 12-8q-8 2-6 10" fill="#ffc400" ${O}/><circle cx="50" cy="58" r="34" fill="#ffd93b" ${O}/><path d="M16 60q-10 8 2 16" fill="#ffc400" ${O}/><path d="M84 60q10 8-2 16" fill="#ffc400" ${O}/>`+FACE(52,'<path d="M44 62l6 8 6-8z" fill="#f08a24" stroke="#2b4a5e" stroke-width="2" stroke-linejoin="round"/>')]};
-const chOf=k=>CH[k.ch]?k.ch:'whale';
+const chOf=k=>CH[k.ch]?k.ch:'ts';
+const PH=i=>{try{return localStorage.getItem('md-photo-'+i)}catch(e){return null}};
+const avatar=(ki,cls)=>{const p=PH(ki);return p?`<img class="${cls} ph" src="${p}" alt="" style="--k:${KC[ki%2]}">`:chSvg(cfg.kids[ki],cls)};
 const chSvg=(k,cls)=>`<svg class="${cls}" viewBox="0 0 100 100" aria-hidden="true">${CH[chOf(k)][1]}</svg>`;
 let G=null;
 const L='stroke="#2b4a5e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
@@ -266,7 +279,7 @@ let cfg=load('md-cfg3',null);
 if(!cfg){const o=load('md-cfg2',null);cfg=JSON.parse(JSON.stringify(DEF));
   if(o){cfg.start=o.start;cfg.dep=o.dep;cfg.dad=o.dad;cfg.mom=o.mom;(o.kids||[]).slice(0,2).forEach((k,i)=>{cfg.kids[i].name=k.name;if(k.tasks)cfg.kids[i].am=k.tasks})}}
 let view=autoView(),lastAuto=view;
-['whale','fox'].forEach((c,i)=>{if(cfg.kids[i]&&!cfg.kids[i].ch)cfg.kids[i].ch=c});
+if((cfg.chv||0)<2){['tsb','asb'].forEach((c,i)=>{if(cfg.kids[i])cfg.kids[i].ch=c});cfg.chv=2;save('md-cfg3',cfg)}
 G=load('md-gauge',{pts:[0,0],aw:{}});SM=load('md-say',{});
 const gsave=()=>save('md-gauge',G);
 const gcells=(n,lab)=>Array.from({length:10},(_,i)=>`<i class="${i<n?'on':''}">${lab?(i<n?'★':i+1):''}</i>`).join('');
@@ -290,20 +303,20 @@ function nav(){
 function cards(){
   fresh();if(typeof sayClean==='function')sayClean();const r=RT[view]?view:'am';
   $('kg').innerHTML=cfg.kids.map((k,ki)=>{const T=k[r],d=doneOf(r+ki),next=T.findIndex(t=>!d.includes(t)),n=T.filter(t=>d.includes(t)).length;
-    return `<div class="kc" style="--k:${KC[ki%2]}"><div class="kh">${chSvg(k,'av')}<h2>${esc(k.name)}</h2><div class="hp" aria-label="칭찬스티커 ${G.pts[ki]} / 10"><div class="gauge">${gcells(G.pts[ki])}</div><b>${G.pts[ki]}/10</b></div><span class="cnt">${n} / ${T.length}</span></div>
+    return `<div class="kc" style="--k:${KC[ki%2]}"><div class="kh">${avatar(ki,'av')}<h2>${esc(k.name)}</h2><div class="hp" aria-label="칭찬스티커 ${G.pts[ki]} / 10"><div class="gauge">${gcells(G.pts[ki])}</div><b>${G.pts[ki]}/10</b></div><span class="cnt">${n} / ${T.length}</span></div>
     <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<button class="bub" data-again="${ki}" aria-label="다시 듣기: ${esc(SM[ki].t)}">${sayIco(SM[ki].t)}<b>${esc(SM[ki].t)}</b><small>${esc(SM[ki].at)}</small></button>`:'<div class="bub empty">버튼을 눌러 하고 싶은 말을 골라요</div>'}</div>
     <div class="cards">${T.map((t,i)=>`<button class="c${d.includes(t)?' done':''}" data-k="${ki}" data-t="${t}" aria-pressed="${d.includes(t)}" aria-label="${esc(k.name)} ${ICONS[t][0]}"><span class="n">${i+1}</span><svg class="pic" viewBox="0 0 120 120" aria-hidden="true">${ICONS[t][1]}</svg><span class="nm">${ICONS[t][0]}</span><span class="stamp"><span>다 했어!</span></span></button>`).join('')}</div>
     <div class="all${T.length&&next===-1?' on':''}">${esc(k.name)} ${r==='am'?'준비 끝! 최고야':'다 했다! 이제 놀자'}</div></div>`}).join('');
 }
 function gauge(){
   $('gv').innerHTML=cfg.kids.map((k,ki)=>{const n=G.pts[ki],f=n>=10;
-    return `<div class="gc${f?' full':''}" style="--k:${KC[ki%2]}">${chSvg(k,'big')}<h2>${esc(k.name)}</h2><div class="gauge">${gcells(n,1)}</div>
+    return `<div class="gc${f?' full':''}" style="--k:${KC[ki%2]}">${avatar(ki,'big')}<h2>${esc(k.name)}</h2><div class="gauge">${gcells(n,1)}</div>
     <div class="num">${f?'칭찬스티커 10개! 정말 대단해':`${n} <small>/ 10</small>`}</div>
     <div class="note">${f?'약속한 선물을 받을 시간이에요':`루틴을 끝까지 하면 칭찬스티커를 하나 받아요. ${10-n}개 남았어요`}</div>
     ${f?`<button class="btn" data-reset="${ki}">다시 0부터 시작</button>`:''}</div>`}).join('');
 }
 function pop(ki,n){const k=cfg.kids[ki];
-  $('popc').innerHTML=`${chSvg(k,'')}<h2>${n>=10?'칭찬스티커 10개!':'칭찬스티커 +1'}</h2><p>${esc(k.name)} ${n} / 10${n>=10?' — 최고야!':''}</p>`;
+  $('popc').innerHTML=`${avatar(ki,'')}<h2>${n>=10?'칭찬스티커 10개!':'칭찬스티커 +1'}</h2><p>${esc(k.name)} ${n} / 10${n>=10?' — 최고야!':''}</p>`;
   $('pop').classList.add('on');clearTimeout(pop.t);pop.t=setTimeout(()=>$('pop').classList.remove('on'),n>=10?4500:2500)}
 function award(r,ki){
   const T=cfg.kids[ki][r],d=doneOf(r+ki),ok=T.length>0&&T.every(t=>d.includes(t)),key=prog.day+r+ki;
@@ -387,12 +400,20 @@ $('vc').onchange=()=>{draft.voice=$('vc').value};
 $('vtest').onclick=()=>{const keep=cfg.voice;cfg.voice=$('vc').value;speak('사랑해요. 오늘도 수고했어요');cfg.voice=keep};
 function editor(){
   $('st').value=draft.start;$('dt').value=draft.dep;voices();
-  $('kedit').innerHTML=`<div class="row"><label for="pd">아빠</label><input type="text" id="pd" data-p="dad" value="${esc(draft.dad)}" maxlength="10"><label for="pm2">엄마</label><input type="text" id="pm2" data-p="mom" value="${esc(draft.mom)}" maxlength="10"></div>`+draft.kids.map((k,i)=>`<div class="kid"><div class="row"><label for="kn${i}">자녀${i+1}</label><input type="text" id="kn${i}" data-n="${i}" value="${esc(k.name)}" maxlength="10"></div><b>캐릭터</b><div class="chips">${Object.keys(CH).map(c=>`<button type="button" class="chip" data-kid="${i}" data-ch="${c}" aria-pressed="${chOf(k)===c}">${CH[c][0]}</button>`).join('')}</div><div class="note" style="text-align:left">누르는 순서대로 할 일 순서가 정해져요.</div>${['am','pm'].map(r=>`<b>${RT[r]}</b><div class="chips">${ORDER.map(t=>{const j=k[r].indexOf(t);return `<button type="button" class="chip" data-kid="${i}" data-r="${r}" data-t="${t}" aria-pressed="${j>=0}">${j>=0?(j+1)+'. ':''}${ICONS[t][0]}</button>`}).join('')}</div>`).join('')}</div>`).join('');
+  $('kedit').innerHTML=`<div class="row"><label for="pd">아빠</label><input type="text" id="pd" data-p="dad" value="${esc(draft.dad)}" maxlength="10"><label for="pm2">엄마</label><input type="text" id="pm2" data-p="mom" value="${esc(draft.mom)}" maxlength="10"></div>`+draft.kids.map((k,i)=>`<div class="kid"><div class="row"><label for="kn${i}">자녀${i+1}</label><input type="text" id="kn${i}" data-n="${i}" value="${esc(k.name)}" maxlength="10"></div><b>얼굴 사진</b><div class="phrow">${PH(i)?`<img class="ph" src="${PH(i)}" alt="" style="--k:${KC[i%2]}">`:''}<label class="btn ghost">사진 고르기<input type="file" accept="image/*" data-photo="${i}" hidden></label>${PH(i)?`<button type="button" class="btn ghost" data-phdel="${i}">사진 빼기</button>`:''}</div><div class="note" style="text-align:left">얼굴이 가운데 오게 자른 사진이 좋아요. 사진은 이 아이패드에만 저장되고, 넣으면 캐릭터 대신 사진이 나와요.</div><b>캐릭터</b><div class="chips">${Object.keys(CH).map(c=>`<button type="button" class="chip" data-kid="${i}" data-ch="${c}" aria-pressed="${chOf(k)===c}">${CH[c][0]}</button>`).join('')}</div><div class="note" style="text-align:left">누르는 순서대로 할 일 순서가 정해져요.</div>${['am','pm'].map(r=>`<b>${RT[r]}</b><div class="chips">${ORDER.map(t=>{const j=k[r].indexOf(t);return `<button type="button" class="chip" data-kid="${i}" data-r="${r}" data-t="${t}" aria-pressed="${j>=0}">${j>=0?(j+1)+'. ':''}${ICONS[t][0]}</button>`}).join('')}</div>`).join('')}</div>`).join('');
 }
 $('gear').onclick=()=>{draft=JSON.parse(JSON.stringify(cfg));editor();$('dlg').showModal();const h=$('dlg').querySelector('h2');h.tabIndex=-1;h.style.outline='none';h.focus({preventScroll:true})};
 $('cancel').onclick=()=>$('dlg').close();
+$('kedit').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0],i=e.target.dataset.photo;if(!f||i===undefined)return;
+  const url=URL.createObjectURL(f),img=new Image();
+  img.onload=()=>{const S=240,c=document.createElement('canvas');c.width=c.height=S;const m=Math.min(img.width,img.height);
+    c.getContext('2d').drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S,S);URL.revokeObjectURL(url);
+    try{localStorage.setItem('md-photo-'+i,c.toDataURL('image/jpeg',.85))}catch(err){}
+    editor();cards()};
+  img.src=url});
 $('kedit').addEventListener('input',e=>{const i=e.target.dataset.n,p=e.target.dataset.p;if(i!==undefined)draft.kids[i].name=e.target.value;if(p)draft[p]=e.target.value});
 $('kedit').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.phdel!==undefined){try{localStorage.removeItem('md-photo-'+b.dataset.phdel)}catch(e){}editor();cards();return}
   if(b.dataset.ch){draft.kids[b.dataset.kid].ch=b.dataset.ch;editor();return}
   if(!b.dataset.r)return;
   const L=draft.kids[b.dataset.kid][b.dataset.r],t=b.dataset.t,j=L.indexOf(t);
