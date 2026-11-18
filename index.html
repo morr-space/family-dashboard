@@ -39,9 +39,9 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-of
 .top>.bar,.top>.head{position:relative;z-index:1}
 .cloud{position:absolute;left:0;width:120px;height:46px;pointer-events:none;z-index:0;opacity:.9;animation:drift linear infinite;will-change:transform}
 .cloud path{fill:light-dark(#fff,#ffffff30)}
-.c1{top:6px;animation-duration:95s;animation-delay:-20s}
-.c2{top:58px;width:90px;height:34px;animation-duration:130s;animation-delay:-80s;opacity:.7}
-.c3{top:120px;width:150px;height:56px;animation-duration:160s;animation-delay:-40s;opacity:.6}
+.c1{top:70px;animation-duration:95s;animation-delay:-20s}
+.c2{top:128px;width:90px;height:34px;animation-duration:130s;animation-delay:-80s;opacity:.7}
+.c3{top:176px;width:150px;height:56px;animation-duration:160s;animation-delay:-40s;opacity:.6}
 @keyframes drift{from{transform:translateX(-170px)}to{transform:translateX(calc(100vw + 20px))}}
 .walker{position:absolute;left:0;bottom:-15px;z-index:3;animation:walk 34s ease-in-out infinite alternate;cursor:pointer}
 .walker .fl{animation:flip 68s step-end infinite}
@@ -85,8 +85,8 @@ html[data-pal=space] .tab[aria-pressed=true]{color:var(--ink);background:var(--c
 html[data-pal=space] .ib{background:#ffffff26;color:#fff}
 html[data-pal=space] .cloud{display:none}html[data-pal=space] .stars,html[data-pal=space] .moon{display:block}
 .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.tab{min-height:44px;padding:6px 18px;border-radius:999px;border:2px solid #fff8;background:#ffffff55;font-family:Jua;font-size:19px}
-.tab[aria-pressed=true]{background:var(--card);border-color:var(--card);box-shadow:0 3px 0 #0002}
+.tab{min-height:44px;padding:6px 18px;border-radius:999px;border:2px solid transparent;background:color-mix(in srgb,var(--sky) 55%,#2b4a5e 18%);color:var(--ink);font-family:Jua;font-size:19px}
+.tab[aria-pressed=true]{background:var(--card);border-color:#2b4a5e;box-shadow:0 3px 0 #2b4a5e}
 .sp{flex:1}
 .ib{width:44px;height:44px;border-radius:50%;border:0;background:#ffffff66;display:grid;place-items:center}
 .ib svg{width:22px;height:22px}
