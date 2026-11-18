@@ -185,7 +185,7 @@ input[type=time],input[type=text],select{font:inherit;font-size:16px;min-height:
 <main>
   <section class="pv" id="pv"></section>
   <section class="gv" id="gv" aria-label="칭찬스티커"></section>
-  <section class="home route" id="home"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 30L32 8l26 22" fill="none" stroke="#ff6b4a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 28v28h40V28L32 12z" fill="#fff4d6" stroke="#c9a26a" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="38" width="12" height="18" rx="2" fill="#8a5a2b"/><circle cx="35" cy="47" r="1.6" fill="#ffd23f"/><path d="M44 18v-8h6v13" fill="#c9a26a"/></svg><div><h2>어서 와! 오늘도 수고했어</h2><p>집에 오면 차례대로 해요. 다 하면 놀 시간!</p></div></section>
+  <section class="home route" id="home"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 30L32 8l26 22" fill="none" stroke="#ff6b4a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 28v28h40V28L32 12z" fill="#fff4d6" stroke="#c9a26a" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="38" width="12" height="18" rx="2" fill="#8a5a2b"/><circle cx="35" cy="47" r="1.6" fill="#ffd23f"/><path d="M44 18v-8h6v13" fill="#c9a26a"/></svg><div><h2>어서 와! 오늘도 수고했어</h2><p>집에 오면 하나씩 해요. 다 하면 놀 시간!</p></div></section>
   <section class="go route" id="go">
     <div><div class="lbl" id="golbl">유치원 출발까지</div><h2 id="goh">—</h2></div>
     <div class="road">
@@ -292,7 +292,7 @@ function cards(){
   $('kg').innerHTML=cfg.kids.map((k,ki)=>{const T=k[r],d=doneOf(r+ki),next=T.findIndex(t=>!d.includes(t)),n=T.filter(t=>d.includes(t)).length;
     return `<div class="kc" style="--k:${KC[ki%2]}"><div class="kh">${chSvg(k,'av')}<h2>${esc(k.name)}</h2><div class="hp" aria-label="칭찬스티커 ${G.pts[ki]} / 10"><div class="gauge">${gcells(G.pts[ki])}</div><b>${G.pts[ki]}/10</b></div><span class="cnt">${n} / ${T.length}</span></div>
     <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<button class="bub" data-again="${ki}" aria-label="다시 듣기: ${esc(SM[ki].t)}">${sayIco(SM[ki].t)}<b>${esc(SM[ki].t)}</b><small>${esc(SM[ki].at)}</small></button>`:'<div class="bub empty">버튼을 눌러 하고 싶은 말을 골라요</div>'}</div>
-    <div class="cards">${T.map((t,i)=>`<button class="c${d.includes(t)?' done':''}${i===next?' cur':''}" data-k="${ki}" data-t="${t}" aria-pressed="${d.includes(t)}" aria-label="${esc(k.name)} ${ICONS[t][0]}"><span class="n">${i+1}</span>${i===next?'<span class="badge">지금!</span>':''}<svg class="pic" viewBox="0 0 120 120" aria-hidden="true">${ICONS[t][1]}</svg><span class="nm">${ICONS[t][0]}</span><span class="stamp"><span>다 했어!</span></span></button>`).join('')}</div>
+    <div class="cards">${T.map((t,i)=>`<button class="c${d.includes(t)?' done':''}" data-k="${ki}" data-t="${t}" aria-pressed="${d.includes(t)}" aria-label="${esc(k.name)} ${ICONS[t][0]}"><span class="n">${i+1}</span><svg class="pic" viewBox="0 0 120 120" aria-hidden="true">${ICONS[t][1]}</svg><span class="nm">${ICONS[t][0]}</span><span class="stamp"><span>다 했어!</span></span></button>`).join('')}</div>
     <div class="all${T.length&&next===-1?' on':''}">${esc(k.name)} ${r==='am'?'준비 끝! 최고야':'다 했다! 이제 놀자'}</div></div>`}).join('');
 }
 function gauge(){
