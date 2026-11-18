@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script>try{if(localStorage.getItem('md-unlock')!=='6f11246a9f8a0e76b6ffcde1c806495d5bd1c71130e38621271109bc1e84abe7')document.documentElement.classList.add('locked')}catch(e){document.documentElement.classList.add('locked')}</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>우리가족 대시보드</title>
@@ -137,7 +138,52 @@ body[data-v=gauge] .gv{display:grid}
 .pv{display:none;background:var(--card);border-radius:26px;padding:40px 24px;text-align:center}
 .pv h2{margin:0 0 8px;font-size:40px}
 body[data-v=dad] .pv,body[data-v=mom] .pv{display:block}
-body[data-v=dad] .route,body[data-v=mom] .route,body[data-v=gauge] .route{display:none}
+body[data-v=dad] .route,body[data-v=mom] .route,body[data-v=gauge] .route,body[data-v=cal] .route{display:none}
+.cal{cursor:pointer}.cal:active{transform:scale(.98)}
+.cg .dot{position:relative}.cg .dot::after{content:"";position:absolute;left:50%;bottom:0;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#e05aa0}
+.calv{display:none;gap:16px}body[data-v=cal] .calv{display:grid}
+.ctop{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start}
+.bigc,.dayp,.pl{background:var(--card);border-radius:22px;padding:14px 16px;box-shadow:0 4px 0 #0001}
+.bch{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bch h2{margin:0;font-size:30px;flex:1}
+.bch button{min-width:44px;min-height:44px;border-radius:12px;border:2px solid var(--line);background:var(--bg);font-family:Jua;font-size:18px}
+.bg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.bg .w{text-align:center;font-size:13px;color:var(--soft)}
+.bg button{min-height:70px;border:2px solid transparent;border-radius:12px;background:var(--bg);padding:4px;text-align:left;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.bg .dn{font-family:Jua;font-size:17px;line-height:1.3}
+.bg .su .dn{color:#e5484d}.bg .sa .dn{color:#2f7fd1}
+.bg .td .dn{background:var(--sun);color:#3a2a00;border-radius:999px;padding:0 7px;align-self:flex-start}
+.bg button[aria-pressed=true]{border-color:var(--ink)}
+.bg .out{visibility:hidden}
+.ev{font-size:11px;line-height:1.35;border-radius:5px;padding:0 4px;color:#fff;background:var(--c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.more{font-size:11px;color:var(--soft)}
+.dayp h3,.pl h3{margin:0 0 8px;font-family:Jua;font-weight:400;font-size:22px}
+.el{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.el li{display:flex;align-items:center;gap:8px;border-left:5px solid var(--c);background:var(--bg);border-radius:8px;padding:5px 6px 5px 8px;font-size:15px}
+.el .tm{color:var(--soft);font-size:13px;white-space:nowrap}
+.el .tt{flex:1;overflow-wrap:anywhere}
+.el li button{border:0;background:transparent;font-size:20px;color:var(--soft);min-width:36px;min-height:36px}
+.af{display:grid;gap:8px;margin-top:12px;border-top:1px dashed var(--line);padding-top:12px}
+.who{display:flex;flex-wrap:wrap;gap:6px}
+.who button{min-height:40px;padding:4px 12px;border-radius:999px;border:2px solid var(--c);background:transparent;font-family:Jua;font-size:16px;color:var(--ink)}
+.who button[aria-pressed=true]{background:var(--c);color:#fff}
+.pls{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.pl h3{display:flex;align-items:center;gap:6px}
+.pl h3 i{width:14px;height:14px;border-radius:50%;background:var(--c);flex:none}
+.pl .empty{color:var(--soft);font-size:14px}
+.pl .el li{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:4px}
+.pl .el .tm{grid-column:1}.pl .el .tt{grid-column:1;font-size:15px}.pl .el li button{grid-column:2;grid-row:1/3}
+#lock{position:fixed;inset:0;z-index:50;background:linear-gradient(var(--sky),var(--bg));display:none;place-items:center;padding:16px}
+html.locked #lock{display:grid}html.locked body>:not(#lock){visibility:hidden}
+.lk{background:var(--card);border-radius:30px;padding:26px 30px;text-align:center;box-shadow:0 8px 0 #0002;width:min(360px,100%)}
+.lk h2{margin:0;font-size:30px}.lk p{margin:4px 0 14px;color:var(--soft)}
+.dots{display:flex;justify-content:center;gap:14px;margin-bottom:18px}
+.dots i{width:18px;height:18px;border-radius:50%;border:3px solid var(--ink)}.dots i.on{background:var(--ink)}
+.lk.bad .dots{animation:shake .4s}@keyframes shake{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+.pad{display:grid;grid-template-columns:repeat(3,72px);gap:12px;justify-content:center}
+.pad button{width:72px;height:72px;border-radius:50%;border:2px solid var(--line);background:var(--bg);font-family:Jua;font-size:30px}
+.pad button:active{background:var(--sun)}
+@media(max-width:900px){.ctop{grid-template-columns:1fr}.pls{grid-template-columns:repeat(2,minmax(0,1fr))}}
 body[data-v=pm] #go{display:none}
 .home{display:none;background:var(--card);border-radius:22px;padding:12px 20px;align-items:center;gap:16px;box-shadow:0 4px 0 #0001}
 body[data-v=pm] .home{display:flex}
@@ -167,6 +213,8 @@ input[type=time],input[type=text],select{font:inherit;font-size:16px;min-height:
 </style>
 </head>
 <body>
+<div id="lock" role="dialog" aria-label="비밀번호 입력"><div class="lk" id="lk"><h2>우리가족 대시보드</h2><p>비밀번호 4자리를 눌러주세요</p><div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+<div class="pad" id="pad"><button>1</button><button>2</button><button>3</button><button>4</button><button>5</button><button>6</button><button>7</button><button>8</button><button>9</button><span></span><button>0</button><button aria-label="지우기">⌫</button></div></div></div>
 <header class="top">
   <div class="bar">
     <div id="nav" class="bar" role="group" aria-label="화면 선택"></div>
@@ -185,11 +233,12 @@ input[type=time],input[type=text],select{font:inherit;font-size:16px;min-height:
       <div class="hrs" id="hrs"></div>
       <div class="tip" id="tip">분당 날씨를 확인하고 있어요</div>
     </div>
-    <div class="cal" aria-label="이번 달 달력"><h3 id="calh">달력</h3><div class="cg" id="calg"></div></div>
+    <div class="cal" id="calcard" role="button" tabindex="0" aria-label="달력과 일정 보기"><h3 id="calh">달력</h3><div class="cg" id="calg"></div></div>
   </div>
 </header>
 <main>
   <section class="pv" id="pv"></section>
+  <section class="calv" id="calv" aria-label="달력과 일정"></section>
   <section class="gv" id="gv" aria-label="칭찬스티커"></section>
   <section class="home route" id="home"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 30L32 8l26 22" fill="none" stroke="#ff6b4a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 28v28h40V28L32 12z" fill="#fff4d6" stroke="#c9a26a" stroke-width="3" stroke-linejoin="round"/><rect x="26" y="38" width="12" height="18" rx="2" fill="#8a5a2b"/><circle cx="35" cy="47" r="1.6" fill="#ffd23f"/><path d="M44 18v-8h6v13" fill="#c9a26a"/></svg><div><h2>어서 와! 오늘도 수고했어</h2><p>집에 오면 하나씩 해요. 다 하면 놀 시간!</p></div></section>
   <section class="go route" id="go">
@@ -257,7 +306,7 @@ const chOf=k=>CH[k.ch]?k.ch:'ts';
 const PH=i=>{try{return localStorage.getItem('md-photo-'+i)}catch(e){return null}};
 const avatar=(ki,cls)=>{const p=PH(ki);return p?`<img class="${cls} ph" src="${p}" alt="" style="--k:${KC[ki%2]}">`:chSvg(cfg.kids[ki],cls)};
 const chSvg=(k,cls)=>`<svg class="${cls}" viewBox="0 0 100 100" aria-hidden="true">${CH[chOf(k)][1]}</svg>`;
-let G=null;
+let G=null,EV=[];
 const L='stroke="#2b4a5e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
 const SAY=[
 ['사랑해요',`<path d="M24 42S6 31 6 18a9 9 0 0 1 18-4 9 9 0 0 1 18 4c0 13-18 24-18 24z" fill="#ff6b8a" ${L}/><path d="M13 16q1-4 5-5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`],
@@ -280,7 +329,7 @@ if(!cfg){const o=load('md-cfg2',null);cfg=JSON.parse(JSON.stringify(DEF));
   if(o){cfg.start=o.start;cfg.dep=o.dep;cfg.dad=o.dad;cfg.mom=o.mom;(o.kids||[]).slice(0,2).forEach((k,i)=>{cfg.kids[i].name=k.name;if(k.tasks)cfg.kids[i].am=k.tasks})}}
 let view=autoView(),lastAuto=view;
 if((cfg.chv||0)<2){['tsb','asb'].forEach((c,i)=>{if(cfg.kids[i])cfg.kids[i].ch=c});cfg.chv=2;save('md-cfg3',cfg)}
-G=load('md-gauge',{pts:[0,0],aw:{}});SM=load('md-say',{});
+G=load('md-gauge',{pts:[0,0],aw:{}});EV=load('md-events',[]);SM=load('md-say',{});
 const gsave=()=>save('md-gauge',G);
 const gcells=(n,lab)=>Array.from({length:10},(_,i)=>`<i class="${i<n?'on':''}">${lab?(i<n?'★':i+1):''}</i>`).join('');
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
@@ -298,6 +347,7 @@ function nav(){
   document.body.dataset.v=view;
   if(RT[view])cards();
   else if(view==='gauge')gauge();
+  else if(view==='cal')calPage();
   else $('pv').innerHTML=`<h2>${esc(view==='dad'?cfg.dad:cfg.mom)}</h2><p>${view==='dad'?'아빠':'엄마'} 페이지예요. 일정이나 할 일을 여기에 넣을 수 있어요.</p>`;
 }
 function cards(){
@@ -307,6 +357,29 @@ function cards(){
     <div class="say"><button class="sb" data-say="${ki}">하고 싶은 말</button>${SM[ki]?`<button class="bub" data-again="${ki}" aria-label="다시 듣기: ${esc(SM[ki].t)}">${sayIco(SM[ki].t)}<b>${esc(SM[ki].t)}</b><small>${esc(SM[ki].at)}</small></button>`:'<div class="bub empty">버튼을 눌러 하고 싶은 말을 골라요</div>'}</div>
     <div class="cards">${T.map((t,i)=>`<button class="c${d.includes(t)?' done':''}" data-k="${ki}" data-t="${t}" aria-pressed="${d.includes(t)}" aria-label="${esc(k.name)} ${ICONS[t][0]}"><span class="n">${i+1}</span><svg class="pic" viewBox="0 0 120 120" aria-hidden="true">${ICONS[t][1]}</svg><span class="nm">${ICONS[t][0]}</span><span class="stamp"><span>다 했어!</span></span></button>`).join('')}</div>
     <div class="all${T.length&&next===-1?' on':''}">${esc(k.name)} ${r==='am'?'준비 끝! 최고야':'다 했다! 이제 놀자'}</div></div>`}).join('');
+}
+const WHO=()=>[['all','공통','#2fa84f'],['dad',cfg.dad,'#7b6cd9'],['mom',cfg.mom,'#e05aa0'],['k0',cfg.kids[0].name,KC[0]],['k1',cfg.kids[1].name,KC[1]]];
+const wc=w=>(WHO().find(x=>x[0]===w)||WHO()[0])[2];
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+let cm=null,sel=null,nw='all';
+const evOn=d=>EV.filter(e=>e.d===d).sort((a,b)=>(a.t||'').localeCompare(b.t||''));
+const tlabel=t=>t?fmt(mins(t)):'하루 종일';
+const dlabel=d=>{const[y,m,dd]=d.split('-').map(Number);return `${m}/${dd}(${DAYS[new Date(y,m-1,dd).getDay()]})`};
+function calPage(){const n=new Date(),td=ymd(n);if(!cm)cm=new Date(n.getFullYear(),n.getMonth(),1);if(!sel)sel=td;
+  const y=cm.getFullYear(),m=cm.getMonth(),first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate();
+  let g=[...'일월화수목금토'].map(d=>`<span class="w">${d}</span>`).join('');
+  for(let i=0;i<first;i++)g+='<span class="out"></span>';
+  for(let d=1;d<=last;d++){const k=ymd(new Date(y,m,d)),w=(first+d-1)%7,es=evOn(k);
+    g+=`<button type="button" data-day="${k}" class="${w===0?'su':w===6?'sa':''}${k===td?' td':''}" aria-pressed="${k===sel}"><span class="dn">${d}</span>${es.slice(0,2).map(e=>`<span class="ev" style="--c:${wc(e.who)}">${esc(e.title)}</span>`).join('')}${es.length>2?`<span class="more">+${es.length-2}</span>`:''}</button>`}
+  const li=(e,sd)=>`<li style="--c:${wc(e.who)}"><span class="tm">${sd?dlabel(e.d)+' ':''}${tlabel(e.t)}</span><span class="tt">${esc(e.title)}</span><button type="button" data-edel="${e.id}" aria-label="${esc(e.title)} 지우기">×</button></li>`;
+  const ds=evOn(sel),up=w=>EV.filter(e=>e.who===w&&e.d>=td).sort((a,b)=>(a.d+(a.t||'')).localeCompare(b.d+(b.t||''))).slice(0,8);
+  $('calv').innerHTML=`<div class="ctop"><div class="bigc"><div class="bch"><button type="button" data-cm="-1" aria-label="이전 달">‹</button><h2>${y}년 ${m+1}월</h2><button type="button" data-cm="0">오늘</button><button type="button" data-cm="1" aria-label="다음 달">›</button></div><div class="bg">${g}</div></div>
+  <div class="dayp"><h3>${dlabel(sel)} 일정</h3><ul class="el">${ds.length?ds.map(e=>li(e,0)).join(''):'<li style="--c:var(--line)"><span class="tt empty" style="color:var(--soft)">일정이 없어요</span></li>'}</ul>
+  <form class="af" id="af"><input type="text" id="et" maxlength="30" placeholder="일정 이름 (예: 치과, 생일잔치)" autocomplete="off"><div class="row"><input type="time" id="etm" aria-label="시간"><span class="note">시간은 비워도 돼요</span></div>
+  <div class="who">${WHO().map(([w,l,c])=>`<button type="button" data-who="${w}" style="--c:${c}" aria-pressed="${w===nw}">${esc(l)}</button>`).join('')}</div><button class="btn">${dlabel(sel)}에 추가</button></form></div></div>
+  <div class="pls">${WHO().map(([w,l,c])=>{const u=up(w);return `<div class="pl" style="--c:${c}"><h3><i></i>${esc(l)}</h3><ul class="el">${u.length?u.map(e=>li(e,1)).join(''):'<li style="--c:var(--line)"><span class="empty">다가오는 일정이 없어요</span></li>'}</ul></div>`}).join('')}</div>`;
+  $('af').onsubmit=e=>{e.preventDefault();const t=$('et').value.trim();if(!t)return;
+    EV.push({id:Date.now().toString(36),d:sel,t:$('etm').value||'',title:t,who:nw});save('md-events',EV);calKey='';cal(new Date());calPage()};
 }
 function gauge(){
   $('gv').innerHTML=cfg.kids.map((k,ki)=>{const n=G.pts[ki],f=n>=10;
@@ -331,7 +404,7 @@ function cal(n){const y=n.getFullYear(),m=n.getMonth(),k=y+'-'+m+'-'+n.getDate()
   const first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate(),td=n.getDate();
   let h=[...'일월화수목금토'].map((d,i)=>`<span class="w${i===0?' su':i===6?' sa':''}">${d}</span>`).join('');
   for(let i=0;i<first;i++)h+='<span></span>';
-  for(let d=1;d<=last;d++){const w=(first+d-1)%7;h+=`<span class="${d===td?'td':w===0?'su':w===6?'sa':''}${d<td?' ps':''}">${d}</span>`}
+  for(let d=1;d<=last;d++){const w=(first+d-1)%7;h+=`<span class="${d===td?'td':w===0?'su':w===6?'sa':''}${d<td?' ps':''}${EV.some(e=>e.d===ymd(new Date(y,m,d)))?' dot':''}">${d}</span>`}
   $('calh').innerHTML=`${m+1}월<small>${y}</small>`;$('calg').innerHTML=h}
 function tick(){
   const n=new Date(),h=n.getHours(),m=n.getMinutes();
@@ -456,12 +529,28 @@ $('sayc').addEventListener('click',e=>{const b=e.target.closest('button');if(!b|
   if(b.dataset.st){const n=new Date();SM[sayKi]={t:b.dataset.st,at:fmt(n.getHours()*60+n.getMinutes()),ts:n.getTime()};speak(b.dataset.st)}
   else if(b.dataset.sclr!==undefined)delete SM[sayKi];
   save('md-say',SM);$('sayd').close();cards()});
+$('calcard').addEventListener('click',()=>{view='cal';cm=null;sel=null;nav();scrollTo(0,0)});
+$('calcard').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('calcard').click()}});
+$('calv').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.day){sel=b.dataset.day;calPage();return}
+  if(b.dataset.cm!==undefined){const v=+b.dataset.cm,n=new Date();cm=v===0?new Date(n.getFullYear(),n.getMonth(),1):new Date(cm.getFullYear(),cm.getMonth()+v,1);if(v===0)sel=ymd(n);calPage();return}
+  if(b.dataset.who){nw=b.dataset.who;$('calv').querySelectorAll('.who button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.who===nw));return}
+  if(b.dataset.edel){EV=EV.filter(x=>x.id!==b.dataset.edel);save('md-events',EV);calKey='';cal(new Date());calPage()}});
 $('pop').onclick=()=>$('pop').classList.remove('on');
 $('gv').addEventListener('click',e=>{const b=e.target.closest('[data-reset]');if(!b)return;G.pts[+b.dataset.reset]=0;gsave();gauge()});
 $('fs').onclick=()=>{const el=document.documentElement;try{const p=(el.requestFullscreen||el.webkitRequestFullscreen)?.call(el);p&&p.catch&&p.catch(()=>{})}catch(e){}};
 let lock=null;
 document.addEventListener('click',()=>{if(lock||!navigator.wakeLock)return;navigator.wakeLock.request('screen').then(l=>{lock=l;l.addEventListener('release',()=>lock=null)}).catch(()=>{})});
 
+{const PIN_H='6f11246a9f8a0e76b6ffcde1c806495d5bd1c71130e38621271109bc1e84abe7';let code='';
+  const draw=()=>$('dots').querySelectorAll('i').forEach((d,i)=>d.classList.toggle('on',i<code.length));
+  const sha=async t=>{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')};
+  $('pad').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.textContent==='⌫')code=code.slice(0,-1);else if(code.length<4)code+=b.textContent;draw();
+    if(code.length===4){const h=await sha('family-dashboard:'+code);
+      if(h===PIN_H){try{localStorage.setItem('md-unlock',h)}catch(err){}document.documentElement.classList.remove('locked')}
+      else{$('lk').classList.remove('bad');void $('lk').offsetWidth;$('lk').classList.add('bad');setTimeout(()=>{code='';draw()},400)}}});
+}
 nav();cards();tick();weather();
 setInterval(tick,1000*10);setInterval(weather,1000*60*30);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){tick();cards()}});
