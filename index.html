@@ -139,12 +139,14 @@ img.ph.cut{border-radius:0;object-fit:contain}
 .phrow img{width:52px;height:52px}
 .phrow label.btn{display:inline-flex;align-items:center;cursor:pointer}
 .gauge{flex:1;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px}
-.gauge i{background:light-dark(#fff,#24323e);border:2px solid color-mix(in srgb,var(--k) 45%,transparent)}
-.gauge i.on{background:var(--k);border-color:var(--k)}
-.hp{display:flex;align-items:center;gap:6px;width:clamp(110px,14vw,160px)}
-.hp .gauge{gap:2px;padding:2px;border:2px solid #2b4a5e;border-radius:6px;background:light-dark(#fff,#24323e)}
-.hp .gauge i{height:9px;border:0;border-radius:2px;background:light-dark(#e8edf0,#33444f)}
-.hp .gauge i.on{background:var(--k)}
+.gauge i{display:block;font-style:normal}
+.gauge i svg{display:block;width:100%;height:auto;overflow:visible}
+.gauge i.on svg{animation:shine 3s ease-in-out infinite;animation-delay:calc(var(--n)*-.3s)}
+@keyframes shine{0%,80%,100%{filter:none}90%{filter:brightness(1.35)}}
+.gem-pop{animation:gempop .6s cubic-bezier(.3,1.7,.5,1)}
+@keyframes gempop{from{transform:scale(.2) rotate(-30deg)}}
+.hp{display:flex;align-items:center;gap:6px;width:clamp(130px,16vw,190px)}
+.hp .gauge{gap:1px}
 .hp b{font-family:Jua;font-weight:400;font-size:15px;white-space:nowrap;color:var(--soft)}
 .say{display:flex;align-items:center;gap:8px}
 .bub{border:0;color:inherit;text-align:left;flex:1;min-height:46px;background:var(--card);border-radius:16px;padding:6px 14px;display:flex;align-items:center;gap:8px;position:relative;margin-left:8px}
@@ -167,14 +169,13 @@ body[data-v=gauge] .gv{display:grid}
 .gc svg.big{width:150px;height:150px}
 .gc h2{margin:0;font-size:36px;line-height:1}
 .gc .gauge{width:100%;gap:6px}
-.gc .gauge i{height:58px;border-radius:12px;display:grid;place-items:center;font-family:Jua;font-style:normal;font-size:20px;color:color-mix(in srgb,var(--k) 60%,transparent)}
-.gc .gauge i.on{color:#fff}
+.gc .gauge{gap:8px}
 .gc .num{font-family:Jua;font-size:30px}.gc .num small{font-size:18px;color:var(--soft)}
 .gc.full .num{color:var(--k)}
 .pop{position:fixed;inset:0;display:none;place-items:center;background:#0005;z-index:9}
 .pop.on{display:grid}
 .pop div{background:var(--card);border-radius:30px;padding:26px 40px;text-align:center;box-shadow:0 10px 0 #0002;animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
-.pop svg{width:150px;height:150px}.pop h2{margin:6px 0 0;font-size:40px}.pop p{margin:4px 0 0;font-size:20px}
+.pop svg{width:150px;height:150px}.pop svg.gem-pop{width:64px;height:64px}.pop h2{margin:6px 0 0;font-size:40px}.pop p{margin:4px 0 0;font-size:20px}
 @keyframes pop{from{transform:scale(.4);opacity:0}}
 .kh h2{margin:0;font-size:30px;line-height:1}
 .kh .cnt{margin-left:auto;font-family:Jua;font-size:20px;background:var(--card);border-radius:999px;padding:4px 14px}
@@ -486,7 +487,10 @@ applyLook(cfg);
 if((cfg.chv||0)<2){['tsb','asb'].forEach((c,i)=>{if(cfg.kids[i])cfg.kids[i].ch=c});cfg.chv=2;save('md-cfg3',cfg)}
 G=load('md-gauge',{pts:[0,0],aw:{}});NOTE=load('md-note',{});EV=load('md-events',[]);SM=load('md-say',{});
 const gsave=()=>save('md-gauge',G);
-const gcells=(n,lab)=>Array.from({length:10},(_,i)=>`<i class="${i<n?'on':''}">${lab?(i<n?'★':i+1):''}</i>`).join('');
+const GEMC=['#ff5d73','#ff8a3d','#ffc928','#7bd34f','#2fc4a0','#3db8f5','#4f7cff','#8b6cf0','#d65ae0','#ff6fb1'];
+const gem=(i,on,cls='')=>{const c=on?GEMC[i%10]:'light-dark(#d9dee3,#3a4855)',sk=on?'#2b4a5e':'light-dark(#aab4bd,#566676)';
+  return `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l4.5 6L12 22 1.5 9z" fill="${c}" stroke="${sk}" stroke-width="1.6" stroke-linejoin="round"/>${on?'<path d="M6 3h12l4.5 6h-21z" fill="#fff" opacity=".38"/><path d="M8.5 9 12 20.5 15.5 9" fill="#fff" opacity=".18"/><path d="M8 5.2l-1.4 2" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>':'<path d="M1.5 9h21M8.5 9 12 20.5 15.5 9" fill="none" stroke="'+sk+'" stroke-width="1" opacity=".7"/>'}</svg>`};
+const gcells=(n)=>Array.from({length:10},(_,i)=>`<i class="${i<n?'on':''}" style="--n:${i}">${gem(i,i<n)}</i>`).join('');
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
 let prog=load('md-prog2',{day:'',done:{}});
 const fresh=()=>{if(prog.day!==today()){prog={day:today(),done:{}};save('md-prog2',prog)}};
@@ -556,12 +560,12 @@ $('hv').addEventListener('click',e=>{
 function gauge(){
   $('gv').innerHTML=cfg.kids.map((k,ki)=>{const n=G.pts[ki],f=n>=10;
     return `<div class="gc${f?' full':''}" style="--k:${KC[ki%2]}">${avatar(ki,'big')}<h2>${esc(k.name)}</h2><div class="gauge">${gcells(n,1)}</div>
-    <div class="num">${f?'칭찬스티커 10개! 정말 대단해':`${n} <small>/ 10</small>`}</div>
-    <div class="note">${f?'약속한 선물을 받을 시간이에요':`루틴을 끝까지 하면 칭찬스티커를 하나 받아요. ${10-n}개 남았어요`}</div>
+    <div class="num">${f?'보석 10개를 다 모았어! 정말 대단해':`${n} <small>/ 10</small>`}</div>
+    <div class="note">${f?'약속한 선물을 받을 시간이에요':`루틴을 끝까지 하면 보석이 하나씩 빛나요. ${10-n}개 남았어요`}</div>
     ${f?`<button class="btn" data-reset="${ki}">다시 0부터 시작</button>`:''}</div>`}).join('');
 }
 function pop(ki,n){const k=cfg.kids[ki];
-  $('popc').innerHTML=`${avatar(ki,'')}<h2>${n>=10?'칭찬스티커 10개!':'칭찬스티커 +1'}</h2><p>${esc(k.name)} ${n} / 10${n>=10?' — 최고야!':''}</p>`;
+  $('popc').innerHTML=`${avatar(ki,'')}<span style="display:block;width:64px;margin:4px auto 0">${gem(n-1,true,'gem-pop')}</span><h2>${n>=10?'보석 10개 다 모았다!':'반짝 보석 +1'}</h2><p>${esc(k.name)} ${n} / 10${n>=10?' — 최고야!':''}</p>`;
   $('pop').classList.add('on');clearTimeout(pop.t);pop.t=setTimeout(()=>$('pop').classList.remove('on'),n>=10?4500:2500)}
 function award(r,ki){
   const T=cfg.kids[ki][r],d=doneOf(r+ki),ok=T.length>0&&T.every(t=>d.includes(t)),key=prog.day+r+ki;
